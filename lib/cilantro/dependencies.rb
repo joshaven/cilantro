@@ -1,3 +1,4 @@
+require 'yaml'
 require 'rubygems'
 require 'rubygems/custom_require'
 
@@ -27,7 +28,14 @@ module Cilantro
     end
 
     def install_missing_gems
-      gempath = "#{APP_ROOT}/gems"
+      Dir.chdir APP_ROOT unless Dir.pwd == APP_ROOT
+      
+      gempath = begin
+        YAML::load_file(File.join APP_ROOT, 'gems', 'gemrc.yml')['gempath'].first
+      rescue
+        "#{APP_ROOT}/gems"
+      end
+      
       return unless File.exists?(gempath)
 
       # Redirect standard output to the netherworld
@@ -45,11 +53,11 @@ module Cilantro
           if $?.success?
             puts pristined
           else
-            direct = `gem install -i gems --no-rdoc --no-ri gems/cache/#{gem_name}.gem`
+            direct = `gem install --config-file gems/gemrc.yml gems/cache/#{gem_name}.gem`
             if $?.success?
               puts direct
             else
-              puts `gem install -i gems --no-rdoc --no-ri -v #{version} #{name}`
+              puts `gem install --config-file gems/gemrc.yml #{version} #{name}`
             end
           end
           # LEAVE THIS HERE FOR LATER REFERENCE - These two commands unpack gems folders. Might be quicker than gem pristine? (but doesn't compile any gem binary libraries)
@@ -72,20 +80,17 @@ module Kernel
   end
 
   def dependency(name, options={})
-    options[:env] = options[:env].to_s if options[:env]
-    options[:only_env] = options[:env]
-    options[:env] = ENV['RACK_ENV'] unless options[:env]
-    if options[:env] == ENV['RACK_ENV'] || ENV['RACK_ENV'] == 'test'
+    if [options[:env] ||= ENV['RACK_ENV']].flatten.collect {|e| e.to_s}.include? ENV['RACK_ENV']
       begin
         require name
       rescue LoadError => e
         if File.directory?("#{APP_ROOT}/gems") && File.writable?("#{APP_ROOT}/gems")
           if e.respond_to?(:name) && e.respond_to?(:version_requirement)
             puts "Installing #{e.name}#{" -v \""+e.version_requirement.to_s+'"' if e.version_requirement}..."
-            puts `gem install -i gems --no-rdoc --no-ri #{"-v \""+e.version_requirement.to_s+'"' if e.version_requirement} #{e.name}`
+            puts `gem install --config-file gems/gemrc.yml #{"-v \""+e.version_requirement.to_s+'"' if e.version_requirement} #{e.name}`
           else
             puts "Installing #{options[:gem] || name}#{" -v "+options[:version] if options[:version]}..."
-            puts `gem install -i gems --no-rdoc --no-ri #{"-v "+options[:version] if options[:version]} #{options[:gem] || name}`
+            puts `gem install --config-file gems/gemrc.yml #{"-v "+options[:version] if options[:version]} #{options[:gem] || name}`
           end
           Gem.use_paths("#{APP_ROOT}/gems", ["#{APP_ROOT}/gems"])
           begin
@@ -105,8 +110,6 @@ module Kernel
 end
 
 # 1. Sandbox Rubygems
-APP_ROOT = File.expand_path(Dir.pwd) unless defined?(APP_ROOT)
-
 if File.directory?("#{APP_ROOT}/gems")
   # Oh but first, go ahead and install any missing gems (PLEASE, only include gems/specifications and gems/cache in your git repo)
     Cilantro.install_missing_gems if File.writable?("#{APP_ROOT}/gems")
