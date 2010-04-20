@@ -93,21 +93,18 @@ module Cilantro
       error 404, &block
     end
 
-    def setup(&block)
-      raise ArgumentError, "Setup must include a code block" unless block_given?
-      # new_block = lambda {
-      #   block.call
-      # }
-      # application.namespaced_filters << [namespace, block]
-    end
-
     def before(&block)
       application.before(&block)
     end
 
+    # Same as :helper_method except that the name will be prefixed with the controller name.
+    #
+    # ie: helper :total do ... end 
+    #     will become "#{self.name}_total" where self.name is the class name of this controller. 
     def helper(name, &block)
       warn "Defining helper #{self.name.to_s + '_' + name.to_s}"
       application.send(:define_method, self.name.to_s + '_' + name.to_s, &block)
+      # helper_method "#{self.name}_#{name}" &block
     end
 
   private
