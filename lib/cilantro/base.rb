@@ -148,6 +148,27 @@ module Cilantro
         warn "Could not notify admin via jabber"
       end
     end
+
+    # Example usage:
+    #   def method_name(args)
+    #     Cilantro::deprecate("Cilantro#method_name","Cilantro#new_method_name")
+    #     ... do what ever it did
+    #   end
+    def deprecate(method, alternate_method=nil)
+      message = "\n" +
+        "*****************************************************************\n" +
+        "DEPRECATION WARNING: you are using deprecated behaviour that will\n" +
+        "be removed from a future version of Cilantro.\n" +
+        "\n" +
+        "#{caller(0)[2]}\n" +
+        "\n" +
+        "* #{method} is deprecated.\n"
+      
+      message << "\n* please use #{alternate_method} instead.\n" if alternate_method
+
+      message << "*****************************************************************"
+      warn(message)
+    end
   end
 
 
