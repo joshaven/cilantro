@@ -122,6 +122,9 @@ module Cilantro
       end
 
       private
+        # The purpose behind some of this is confusing... What is the purpose of the distinction 
+        # of to_str & to_s and why return more then one type of object, a string or an array.
+        # what are the possible input types?
         def slurp(body)
           if body.respond_to? :to_ary
             return body.to_ary.collect {|b| slurp(b)}
@@ -130,6 +133,7 @@ module Cilantro
           elsif body.respond_to?(:to_s)
             body.to_s
           else
+            # TODO: determine if this works:   body.collect { |part| part }
             buf = []
             body.each { |part| buf << part }
             buf
@@ -171,7 +175,11 @@ module Cilantro
       end
       @child
     end
-
+    
+    # Method to intercept rack input and reload app or send the input to the app then return the result.
+    # env must contain 'rack.input'
+    #
+    # Returns a result: [status, headers, body]
     def call(env)
       # puts "[P] Sent: " + env.inspect
       env.delete('rack.errors')
@@ -187,6 +195,7 @@ module Cilantro
       send_to_child(env)
       reply = recv_from_child
       result = JSON.parse(reply)
+# FIXME: The following if statement doesn't do anything, it was probably originally intended as a return
       if result.length == 3
         result
       else
@@ -197,23 +206,31 @@ module Cilantro
       result
     end
 
+    # Iterates through all files looking for changes and returns true/false
     def app_updated?
       @monitor.process
       @need_to_reload
     end
 
+    # TODO: Determine if this probably should be made private
+    # example usage:  send_to_child(env)
     def send_to_child(msg)
       # puts "#{msg['REQUEST_METHOD']} #{msg['REQUEST_PATH']}"
       @to_child.puts JSON.generate(msg)
       @to_child.puts "\n" + @boundary
     end
 
+    # TODO: Determine if this probably should be made private
+    # Stops the child process (if it exists), starts & returns a new child process
     def new_child
       puts "Reloading app..."
       stop_child
       child
     end
 
+    # Stops the child process (if it exists)
+    # TODO: This should return true if the child doesn't exist at the end of the method or false if it does... 
+    #       and it should wait a short time for the child to close, maybe upto 2 seconds.
     def stop_child
       if @child
         Process.kill('INT', @child)

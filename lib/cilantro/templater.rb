@@ -251,9 +251,9 @@ module Cilantro
       @namespace = namespace
       # load view helper if present
       if layout_helper = Layout.get_layout(@name, 'rb')
-        @html = :helper
-        instance_eval(layout_helper.last)
-        @html = :rendering
+        @html = :helper     # TODO: Figure this line out
+        instance_eval(layout_helper.last) # layout_helper will be an array: [file_name, file_content]
+        @html = :rendering  # TODO: Figure this line out
       end
       @layout = Layout.get_layout(@name)
     end
@@ -310,13 +310,16 @@ module Cilantro
     #          when called to render, it will run the block associated with that format and
     #          the result of the block is the response. The content_type header is also set up.
     def respond_to(type, &block)
+      Cilantro::deprecate("Templater#respond_to")
+      # This method is not called from anywhere in the applicaion and 'accepts' is not defined anywhere in the active code,
+      # however it was in some commented code.  I believe This method has been depreciated.
       @respond_to ||= FormatResponder.new
-
+    
       (@response_formats ||= []) << type
       preferred_format = accepts.each {|a| break a if @response_formats.include?(a) }
       content_type preferred_format
       @respond_to.format_proc = block if type == preferred_format
-
+    
       @respond_to
     end
   end

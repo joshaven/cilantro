@@ -5,4 +5,6 @@ unless $LOADED_FEATURES.include?('lib/cilantro.rb') or $LOADED_FEATURES.include?
 
   require File.expand_path(File.join APP_ROOT, 'lib', 'cilantro', 'base')
   require File.expand_path(File.join APP_ROOT, 'lib', 'cilantro', 'controller')
+  require File.expand_path(File.join APP_ROOT, 'lib', 'cilantro', 'templater')
+  require File.expand_path(File.join APP_ROOT, 'lib', 'cilantro', 'auto_reload')
 end
