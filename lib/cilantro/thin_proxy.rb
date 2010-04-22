@@ -5,6 +5,7 @@ require "rack/chunked"
 module Rack
   module Handler
     class Cilantro
+# FIXME: The app param is immeadeatly reassigned making the param un-nessassary and confusing
       def self.run(app, options={})
         app = lambda {|env| ::Cilantro::AutoReloaded.app.call(env) }
         server = ::Thin::Server.new(options[:Host] || '0.0.0.0',
