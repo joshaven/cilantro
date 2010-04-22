@@ -74,32 +74,38 @@ describe 'Cilantro' do
 
     describe 'database' do
       it 'should load the database_config' do
-        Cilantro.database_config.should == nil
-        pending do
-          # test by making a database config
-          fail
+        dependency 'sqlite3', :gem => 'sqlite3-ruby', :env => [:development, :test]
+        dependency 'do_sqlite3'
+        dependency 'dm-core'
+        dependency 'data_objects'
+        # bypass the reading of the config file through yml file by setting the variable directly
+        Cilantro.instance_variable_set '@database_config', {:adapter=>'sqlite3', :database=>':memory:'}
+        Cilantro.database_config.should == {:adapter=>'sqlite3', :database=>':memory:'}
+        Cilantro.setup_database.should be_true
+        class User
+          include DataMapper::Resource
+          property :id, Serial
+          property :name, String
+          self.auto_migrate!
         end
+        
+        User.new(:name => 'Joe User').save.should be_true
+        User.first.name.should == 'Joe User'
       end
-
-      it 'should load the database'
     end
   end
   
   describe 'auto-reloading' do
     it 'should not allow auto-reloading unless the master process is cilantro' do
-      Cilantro.auto_reload = true
-      Cilantro.instance_variable_get('@auto_reload').should be_true
+      Cilantro.instance_variable_set('@auto_reload', true).should be_true
       Cilantro.auto_reload.should be_false
     end
     
-    it 'should allow auto-reload when the master process is cilantro'
-    
-    it 'should know when something has changed' do
-      Cilantro.instance_variable_get('@something_changed').should be_false 
-      pending do
-        #change something
-        Cilantro.instance_variable_get('@something_changed').should be_true
-      end
+    it 'should allow auto-reload when the master process is cilantro' do
+      Cilantro.instance_variable_set('@auto_reload', true)
+      process_name = $0; $0 = 'cilantro' # fake out the process name
+      Cilantro.auto_reload.should be_true
+      $0 = process_name # restore the process name
     end
   end
 
