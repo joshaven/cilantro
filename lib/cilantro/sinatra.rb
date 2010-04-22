@@ -1,3 +1,5 @@
+require File.join(APP_ROOT, 'lib', 'cilantro', 'dependencies')
+
 dependency 'rack'
 dependency 'thin'
 dependency 'eventmachine'
