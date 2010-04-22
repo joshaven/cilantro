@@ -14,6 +14,7 @@ module Cilantro
     end
 
     def load_config(env=nil)
+      # TODO: What is the purpose of the following line?  Why make a variable for a local method?
       env ||= self.env(env)
 
       $: << APP_ROOT unless $:.include?(APP_ROOT)
@@ -24,7 +25,8 @@ module Cilantro
 
       # Beginning with env, we determine which pieces of the app's environment need to be loaded.
         # If in development or production mode, we need to load up Sinatra:
-        puts @something_changed ? "Reloading the app..." : "Loading Cilantro environment #{env.inspect}" unless env == :test
+        # puts @something_changed ? "Reloading the app..." : "Loading Cilantro environment #{env.inspect}" unless env == :test
+        puts @reloader.app_updated? ? "Changes detected, Reloading the app..." : "Loading Cilantro environment #{env.inspect}" if @reloader.is_a?(Cilantro::AutoReloader) && env != :test
         if [:development, :test, :production].include?(env)
           require 'cilantro/sinatra'
           set_options(
@@ -170,8 +172,6 @@ module Cilantro
       warn(message)
     end
   end
-
-
 
   ########################################################################
   # Module: Cilantro::Application
