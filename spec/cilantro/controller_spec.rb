@@ -70,7 +70,13 @@ describe 'Cilantro::Controller' do
       end
       
       it 'should be able to have a custom error on a per controler basis' do
-        pending {fail}
+        class TestController < Application; error(500) {'500 error'}; end
+        TestController.application.errors[500].call.should eql('500 error')
+        class AnotherController < Application; error(500) {'Another 500 Error'}; end
+        pending do
+          TestController.application.errors[500].call.should eql('500 error')
+          AnotherController.application.errors[500].call.should eql('Another 500 Error')
+        end
       end
     end
   end
