@@ -21,16 +21,25 @@ describe 'Cilantro' do
       it 'should self close the AutoReloader when there is no parent process'
       
       it 'should pickup on newly added files' do
-        pending do
-          # Note: @reloader is generally internally accessed through the :app method but we need to shortcut the :auto_reload method
-          cleanup_view :scrap_file # ensure it doesn't exist
-          Cilantro.instance_variable_set '@reloader', Cilantro::AutoReloader.new # start watching the files
-          write_to_view :scrap_file, "<p>Created on: #{Time.now}</p>" # create a new file to be watched
+        # Note: @reloader is generally internally accessed through the :app method but we need to shortcut the :auto_reload method
+        cleanup_view :scrap_file # ensure it doesn't exist
+        Cilantro.instance_variable_set '@reloader', Cilantro::AutoReloader.new # start watching the files
+        write_to_view :scrap_file, "<p>Created on: #{Time.now}</p>" # create a new file to be watched
+        pending do # doesn't notice new file... needs to scan directory
           Cilantro.instance_variable_get('@reloader').app_updated?.should be_true
         end        
       end
       
-      it 'should be ok with files that dissapear'
+      it 'should be ok with files that dissapear' do
+        # Note: @reloader is generally internally accessed through the :app method but we need to shortcut the :auto_reload method
+        write_to_view :scrap_file, "<p>Created on: #{Time.now}</p>"
+        Cilantro.instance_variable_set '@reloader', Cilantro::AutoReloader.new
+        Cilantro.instance_variable_get('@reloader').app_updated?.should be_false
+        cleanup_view :scrap_file
+        pending do # Should not get: "No such file or directory" error
+          Cilantro.instance_variable_get('@reloader').app_updated?.should be_true
+        end
+      end
     end
   end
 end
