@@ -1,4 +1,35 @@
-require 'fileutils'
+require 'rubygems'
+require 'rake'
+
+# require 'fileutils' # TODO: is this necessary?
+
+#######################################
+# Load Jeweler: gem creation/management
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "cilantro"
+    gem.summary = %Q{A Web Framework based on Sinatra}
+    gem.description = %Q{A framework build on top of Sinatra, boasting automagic gem management, auto-reloading in development, and an innovative way to manage templates.}
+    gem.email = "yourtech@gmail.com"
+    gem.homepage = "http://github.com/joshaven/cilantro"
+    gem.authors = ["Joshaven Potter"]
+    gem.add_dependency "rack", ">= 1.0"
+    gem.add_development_dependency "rspec", ">= 1.2.9"
+    gem.add_development_dependency 'dm-core',     '~> 0.10.2' 
+    gem.add_development_dependency 'do_sqlite3',  '~> 0.10.1.1'
+    # gem.add_development_dependency 'yard',        '~> 0.5.4' # Needed for RDoc
+    
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+end
+
+
+###########################
+# Load Cilantro Environment
 
 # Really need some way to determine what the ENV['RACK_ENV'] is "supposed" to be ..
 # or should it be set globally so we know our context?

@@ -5,3 +5,4 @@ gems/bin
 gems/cache
 gems/specifications
 .DS_Store
+pkg
