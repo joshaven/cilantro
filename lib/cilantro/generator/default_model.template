@@ -1,0 +1,8 @@
+class #{name.camel_case}
+  include DataMapper::Resource
+
+  property :id, Serial
+  property :data, String
+  property :created_at, DateTime
+  property :updated_at, DateTime
+end

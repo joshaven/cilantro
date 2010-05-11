@@ -1,4 +1,6 @@
 require File.expand_path File.join(File.dirname(__FILE__), '..', 'spec_helper')
+require 'fileutils'
+
 describe :Cilantro do
   before :all do
     class StubApp
@@ -12,7 +14,7 @@ describe :Cilantro do
   end
   
   describe :Template do
-    
+    it 'should have some specs that describe :Template'
   end
 
   describe :Layout do
@@ -20,7 +22,6 @@ describe :Cilantro do
       @name = 'test_berry_layout'
       @ext = 'haml'
       @layout_dir = File.join(APP_ROOT, 'app', 'views', 'layouts')
-      @layouts_pre_existed = File.exists? @layout_dir
       @layout_content = "<p>Hello World</p>"
       # @layout_helper_content = %q{module Cilantro; def self.smashing_good_time;true;end;end}
       @layout_helper_content = %q{def smashing_good_time();true;end}
@@ -28,15 +29,13 @@ describe :Cilantro do
       @layout_helper_path = File.join @layout_dir, "#{@name}"
 
       # make directory & file as needed
-      Dir.mkdir @layout_dir unless @layouts_pre_existed
+      FileUtils.mkdir_p @layout_dir
       File.open(@layout_path, 'w') {|f| f.write(@layout_content) }
       File.open(@layout_helper_path, 'w') {|f| f.write(@layout_helper_content) }
     end
     
     after :all do
-      File.delete @layout_path
-      File.delete @layout_helper_path      
-      Dir.delete(@layout_dir) unless @layouts_pre_existed
+      FileUtils.remove_dir File.join(APP_ROOT, 'app')
     end
     
     it 'should read layout from the proper directory' do
@@ -86,7 +85,6 @@ describe :Cilantro do
       
       
     end
-    
 
     it 'should render!' do
       # def render!(content_for_layout)
