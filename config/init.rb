@@ -21,6 +21,7 @@ require 'cilantro/templater'
 # require 'base64'
 # require 'cgi'
 
+# dependency 'erubis'  # TODO: uncomment for faster erb (uses C bindings to do erb)
 
 ###################
 # Section: Database Setup
