@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'extlib'
 
 module Cilantro
   class Generator
@@ -20,33 +21,15 @@ module Cilantro
     
   private
     def default_model(name)
-      [ 
-        "class #{name.camel_case}",
-        '  include DataMapper::Resource',
-        '',
-        '  property :id, Serial',
-        '  property :data, String',
-        '  property :created_at, DateTime',
-        '  property :updated_at, DateTime',
-        'end' 
-      ].join("\n")
+      read_erb File.join(APP_ROOT,'lib','cilantro','generator', 'default_model.erb'), {:name => name}
     end
     
     def default_view(name)
-      "%p Greetings from the #{name} view.  Please edit this file."
+      read_erb File.join(APP_ROOT,'lib','cilantro','generator', 'default_view.erb'), {:name => name}
     end
     
     def default_controller(name)
-      [
-        "class #{name.camelcase} < Application",
-        "  namespace '/#{name}/'",
-        "",
-        "  get :new do",
-        "    @#{name.singularize.snake_case} = #{name.singularize.camel_case}.new",
-        "    view :index",
-        "  end",
-        "end"
-      ].join("\n")
+      read_erb File.join(APP_ROOT,'lib','cilantro','generator', 'default_controller.erb'), {:name => name}
     end
   
     # Write a string or array(of lines of text) to the given full path
@@ -58,6 +41,24 @@ module Cilantro
     # Make a folder and any parent folders as needed.
     def ensure_path(*path)
       FileUtils.mkdir_p File.join(path)
+    end
+
+    def read_erb(path, locals={})
+      # a context to render the erb in
+      context = Object.new
+      # create instance variable & a getter method for each local variable passed
+      locals.each do |k,v|
+        context.instance_eval "def #{k};@#{k};end"
+        context.send(:instance_variable_set, "@#{k}", v)
+      end
+      
+      begin # try erubis as the erb parser (faster)
+        require 'erubis' unless defined? Erubis
+        Erubis::Eruby.new IO.read(path)
+      rescue # default to erb as the erb parser
+        require 'erb' unless defined? ERB
+        ERB.new IO.read(path)
+      end.result context.instance_eval("binding")
     end
   end
 end
