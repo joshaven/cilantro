@@ -6,8 +6,15 @@ module Cilantro
     register_markup(/\.md$/, :Markdown)
 
     # Erb
-    autoload(:Erb, 'cilantro/templater/erb')
-    register_markup(/\.erb$/, :Erb)
+    begin # Erubis eRuby (faster erb)
+      require 'erubis'
+      autoload(:Erubis, 'cilantro/templater/erubis')
+      register_markup(/\.erb$/, :Erubis)
+    rescue # use ERB as a backup
+      require 'erb'
+      autoload(:Erb, 'cilantro/templater/erb')
+      register_markup(/\.erb$/, :Erb)
+    end
 
     # Haml
     autoload(:Haml, 'cilantro/templater/haml')
