@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-require 'cilantro/FileMonitor'
+require File.join CILANTRO_ROOT, 'lib', 'cilantro', 'FileMonitor'
+require 'rack'
 
 # puts "Auto-reloading entire app when any project files are modified..."
 
