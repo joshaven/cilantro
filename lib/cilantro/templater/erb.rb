@@ -1,4 +1,4 @@
-require 'erb'
+dependency 'erb'
 
 module Cilantro
   class Template

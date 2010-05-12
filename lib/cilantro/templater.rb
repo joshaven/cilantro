@@ -325,5 +325,5 @@ module Cilantro
   end
 end
 
-require 'cilantro/templater/bootstrap'
+require File.join CILANTRO_ROOT, 'lib', 'cilantro', 'templater', 'bootstrap'
 Application.send(:include, Cilantro::Templater) if ::Object.const_defined?(:Application)
