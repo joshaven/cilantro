@@ -16,23 +16,26 @@ describe 'Cilantro' do
       it 'should not have a pre-existing file structure' do
         File.exists?(File.join(APP_ROOT, 'app')).should be_false
       end
-      
-      it 'should create the view' do
-        @generator.create(:view, :test).should be_true
-        File.exists?(File.join(APP_ROOT, 'app', 'views', 'test', 'new.haml')).should be_true
-      end
-      
-      it 'should creaate the proper model' do
-        
-# TODO: Move the text for the model, view, etc. to external files
-        
-        @generator.create(:model, :test).should be_true
-        
-        expected = "class Test\n  include DataMapper::Resource\n\n  property :id, Serial\n  property :data, String\n  property :created_at, DateTime\n  property :updated_at, DateTime\nend"
 
+      it 'should creaate the proper model' do
+        @generator.create(:model, :test).should be_true
+        expected = "class Test\n  include DataMapper::Resource\n\n  property :id, Serial\n  property :data, String\n  property :created_at, DateTime\n  property :updated_at, DateTime\nend\n"
         get_file_as_string(File.join(APP_ROOT, 'app', 'models', 'test.rb')).should == expected
       end
       
+      it 'should creaate the proper controller' do
+        @generator.create(:controller, :test).should be_true
+        expected = "class Test < Application\n  namespace '/'\n\n  get :home do\n    view :index\n  end\n\n  # Main page\n  get 'new_index' do\n    view :index\n  end\n\n  # This is not yet limited to just one controller or namespace.\n  error do\n    Cilantro.report_error(env['sinatra.error'])\n    view :default_error_page\n  end\nend\n"
+        get_file_as_string(File.join(APP_ROOT, 'app', 'controllers', 'test.rb')).should == expected
+      end
+      
+      it 'should creaate the proper view' do
+        @generator.create(:view, :test).should be_true
+        expected = "%h1 test\n%p hello world"
+        get_file_as_string(File.join(APP_ROOT, 'app', 'views', 'test', 'new.haml')).should == expected
+      end
+
+    private
       def get_file_as_string(filename)
         data = ''
         f = File.open(filename, "r") 
@@ -41,7 +44,6 @@ describe 'Cilantro' do
         end
         return data
       end
-      
     end
   end
 end
