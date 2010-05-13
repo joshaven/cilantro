@@ -26,13 +26,18 @@ module Cilantro
       [ File.join(APP_ROOT,'app','models'),
         File.join(APP_ROOT,'app','controllers'),
         File.join(APP_ROOT,'app','views'),
+        File.join(APP_ROOT,'config'),
+        File.join(APP_ROOT,'db'),
         File.join(APP_ROOT,'lib'),
-        File.join(APP_ROOT,'config') 
+        File.join(APP_ROOT,'public','images'),
+        File.join(APP_ROOT,'public','javascripts'),
+        File.join(APP_ROOT,'public','stylesheets'),
       ].each {|path| ensure_path path}
       write_to_file File.join(APP_ROOT,'README.md'), get_template('README.md')
       write_to_file File.join(APP_ROOT,'config','init.rb'), get_template('init.rb')
       write_to_file File.join(APP_ROOT,'config','unicorn.conf'), get_template('unicorn.conf')
       write_to_file File.join(APP_ROOT,'config.ru'), get_template('config.ru')
+      write_to_file File.join(APP_ROOT,'config','database.yml'), get_template('database.yml')
     end
   
     def default_model(name)
@@ -70,7 +75,7 @@ module Cilantro
       begin # try erubis as the erb parser (faster)
         require 'erubis' unless defined? Erubis
         Erubis::Eruby.new IO.read(path)
-      rescue # default to erb as the erb parser
+      rescue LoadError # default to erb as the erb parser
         require 'erb' unless defined? ERB
         ERB.new IO.read(path)
       end.result context.instance_eval("binding")
