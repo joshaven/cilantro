@@ -36,11 +36,17 @@ end
 ENV['RACK_ENV'] = 'rake'
 
 task :load_cilantro do
-  if File.exists?('lib/cilantro.rb')
-    require 'lib/cilantro'
-  else
-    raise "lib/cilantro.rb is missing!"
-  end
+  begin
+    require 'cilantro'
+  rescue LoadError
+    require 'rubygems'
+    require 'cilantro'
+  end unless defined? Cilantro
+  # if File.exists?('lib/cilantro.rb')
+  #   require 'lib/cilantro'
+  # else
+  #   raise "lib/cilantro.rb is missing!"
+  # end
 end
 
 namespace :env do
