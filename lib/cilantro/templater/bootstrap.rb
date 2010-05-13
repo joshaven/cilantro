@@ -10,7 +10,7 @@ module Cilantro
       require 'erubis'
       autoload(:Erubis, 'cilantro/templater/erubis')
       register_markup(/\.erb$/, :Erubis)
-    rescue # use ERB as a backup
+    rescue LoadError # use ERB as a backup
       require 'erb'
       autoload(:Erb, 'cilantro/templater/erb')
       register_markup(/\.erb$/, :Erb)

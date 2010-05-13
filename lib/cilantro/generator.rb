@@ -3,12 +3,14 @@ require 'extlib'
 
 module Cilantro
   class Generator
-    def create(type, name, data=nil)
+    def create(type, name=nil, data=nil)
       type = type.to_s; name = name.to_s
-      unless %w(model controller view).include? type
+      unless %w(model controller view framework).include? type
         raise 'The furst argument of the create method must be one of: model, controller, or view'
       end
       
+      return default_framework_structure if type == 'framework'
+
       if type=='view'
         path = File.join(APP_ROOT, 'app', type.pluralize, name.snake_case, 'new.haml')
       else
@@ -20,22 +22,35 @@ module Cilantro
     
     
   private
+    def default_framework_structure
+      [ File.join(APP_ROOT,'app','models'),
+        File.join(APP_ROOT,'app','controllers'),
+        File.join(APP_ROOT,'app','views'),
+        File.join(APP_ROOT,'lib'),
+        File.join(APP_ROOT,'config') 
+      ].each {|path| ensure_path path}
+      write_to_file File.join(APP_ROOT,'README.md'), get_template('README.md')
+      write_to_file File.join(APP_ROOT,'config','init.rb'), get_template('init.rb')
+      write_to_file File.join(APP_ROOT,'config','unicorn.conf'), get_template('unicorn.conf')
+      write_to_file File.join(APP_ROOT,'config.ru'), get_template('config.ru')
+    end
+  
     def default_model(name)
-      read_erb File.join(APP_ROOT,'lib','cilantro','generator', 'default_model.erb'), {:name => name}
+      get_template 'default_model.erb', {:name => name}
     end
     
     def default_view(name)
-      read_erb File.join(APP_ROOT,'lib','cilantro','generator', 'default_view.erb'), {:name => name}
+     get_template 'default_view.erb', {:name => name}
     end
     
     def default_controller(name)
-      read_erb File.join(APP_ROOT,'lib','cilantro','generator', 'default_controller.erb'), {:name => name}
+      get_template 'default_controller.erb', {:name => name}
     end
   
     # Write a string or array(of lines of text) to the given full path
     def write_to_file(full_path, data)
       ensure_path File.dirname(full_path)
-      File.open(full_path, 'w') {|f| f.write(data.is_a?(Array) ? data.join("\n") : data) }
+      File.open(full_path, 'w') {|f| f.write(data.is_a?(Array) ? data.join("\n") : data) } unless File.exists?(full_path)
     end
     
     # Make a folder and any parent folders as needed.
@@ -59,6 +74,14 @@ module Cilantro
         require 'erb' unless defined? ERB
         ERB.new IO.read(path)
       end.result context.instance_eval("binding")
+    end
+
+    def get_template(name, locals={})
+      if /\.erb$/ =~ name
+        read_erb File.join(CILANTRO_ROOT,'lib','cilantro','generator', name), locals
+      else
+        IO.read File.join(CILANTRO_ROOT,'lib','cilantro','generator', name)
+      end
     end
   end
 end
