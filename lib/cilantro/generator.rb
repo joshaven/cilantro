@@ -23,12 +23,12 @@ module Cilantro
     
   private
     def default_framework_structure()
-      FileUtils.mkdir name
       [ File.join(APP_ROOT,'app','models'),
         File.join(APP_ROOT,'app','controllers'),
         File.join(APP_ROOT,'app','views'),
         File.join(APP_ROOT,'config'),
         File.join(APP_ROOT,'db'),
+        File.join(APP_ROOT,'gems'),
         File.join(APP_ROOT,'lib'),
         File.join(APP_ROOT,'public','images'),
         File.join(APP_ROOT,'public','javascripts'),
@@ -41,6 +41,7 @@ module Cilantro
       write_to_file File.join(APP_ROOT,'config','unicorn.conf'), get_template('unicorn.conf')
       write_to_file File.join(APP_ROOT,'config.ru'), get_template('config.ru')
       write_to_file File.join(APP_ROOT,'config','database.yml'), get_template('database.yml')
+      write_to_file File.join(APP_ROOT,'gems','gemrc.yml'), get_template('gemrc.yml')
     end
   
     def default_model(name)
