@@ -9,7 +9,7 @@ module Cilantro
         raise 'The furst argument of the create method must be one of: model, controller, or view'
       end
       
-      return default_framework_structure if type == 'framework'
+      return default_framework_structure() if type == 'framework'
 
       if type=='view'
         path = File.join(APP_ROOT, 'app', type.pluralize, name.snake_case, 'new.haml')
@@ -22,7 +22,8 @@ module Cilantro
     
     
   private
-    def default_framework_structure
+    def default_framework_structure()
+      FileUtils.mkdir name
       [ File.join(APP_ROOT,'app','models'),
         File.join(APP_ROOT,'app','controllers'),
         File.join(APP_ROOT,'app','views'),
@@ -32,8 +33,10 @@ module Cilantro
         File.join(APP_ROOT,'public','images'),
         File.join(APP_ROOT,'public','javascripts'),
         File.join(APP_ROOT,'public','stylesheets'),
+        File.join(APP_ROOT,'tasks')
       ].each {|path| ensure_path path}
       write_to_file File.join(APP_ROOT,'README.md'), get_template('README.md')
+      write_to_file File.join(APP_ROOT,'Rakefile'), get_template('Rakefile')
       write_to_file File.join(APP_ROOT,'config','init.rb'), get_template('init.rb')
       write_to_file File.join(APP_ROOT,'config','unicorn.conf'), get_template('unicorn.conf')
       write_to_file File.join(APP_ROOT,'config.ru'), get_template('config.ru')
