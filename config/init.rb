@@ -16,7 +16,7 @@ Cilantro.auto_reload = true
 
 ###################
 # Section: Dependencies and Libraries
-require 'cilantro/templater'
+require File.join CILANTRO_ROOT, 'lib', 'cilantro', 'templater'
 # require 'openssl'
 # require 'base64'
 # require 'cgi'

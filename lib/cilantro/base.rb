@@ -21,14 +21,14 @@ module Cilantro
       $: << APP_ROOT+'/lib' unless $:.include?(APP_ROOT+'/lib')
 
       # Prepare our dependency-loading environment
-      require 'cilantro/dependencies'
+      require File.join CILANTRO_ROOT, 'lib', 'cilantro', 'dependencies'
 
       # Beginning with env, we determine which pieces of the app's environment need to be loaded.
         # If in development or production mode, we need to load up Sinatra:
         # puts @something_changed ? "Reloading the app..." : "Loading Cilantro environment #{env.inspect}" unless env == :test
         puts @reloader.app_updated? ? "Changes detected, Reloading the app..." : "Loading Cilantro environment #{env.inspect}" if @reloader.is_a?(Cilantro::AutoReloader) && env != :test
         if [:development, :test, :production].include?(env)
-          require 'cilantro/sinatra'
+          require File.join CILANTRO_ROOT, 'lib', 'cilantro', 'sinatra'
           set_options(
             :static => true,
             :public => 'public',
@@ -51,7 +51,7 @@ module Cilantro
       load 'config/init.rb'
 
       # If config/init sets auto-reload, then don't load the rest of the app - save that for the auto-spawned processes.
-      return false if auto_reload && require('cilantro/auto_reload')
+      return false if auto_reload && require(File.join CILANTRO_ROOT, 'lib', 'cilantro', 'auto_reload')
 
       # Lastly, we'll load the app files themselves: lib, models, then controllers
         # lib/*.rb - those already loaded won't be reloaded.
