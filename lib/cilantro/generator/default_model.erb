@@ -5,4 +5,7 @@ class <%= name.camel_case %>
   property :data, String
   property :created_at, DateTime
   property :updated_at, DateTime
+  
+  # TODO: The following line ensures that this model has a database table, this should be removed for production use
+  begin self.first rescue self.auto_migrate! end
 end
