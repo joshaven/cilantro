@@ -15,6 +15,15 @@ Kernel.trap('INT') {
 
 require 'optparse'
 
+# added by Joshaven to ensure that the cilantro gem is loaded
+begin
+  require 'cilantro'
+rescue
+  require 'rubygems'
+  require 'cilantro'
+end
+
+
 def safefork
   tryagain = true
 
@@ -95,7 +104,7 @@ end
 $options = {}
 
 optparse = OptionParser.new do |opts|
-  opts.banner = "Usage: #{$0} [action=start|stop|status|restart|new|update|push|git] [directory=.] [options]"
+  opts.banner = "Usage: #{$0} [action=start|stop|status|restart|new|update|push|git|generate] [directory=.] [options]"
 
   $options[:verbose] = false
   opts.on( '-v', '--verbose', "Show me what you're doing" ) do
@@ -143,7 +152,7 @@ optparse.parse! unless ARGV[0] == 'git'
 $action = ARGV[0]
 directory = ARGV[1]
 if directory.nil?
-  if $action =~ /^(run|start|stop|status|restart|new|update|push|git)$/
+  if $action =~ /^(run|start|stop|status|restart|new|update|push|git|generate)$/
     directory = Dir.pwd
   elsif $action.nil?
     directory = Dir.pwd
@@ -454,6 +463,18 @@ begin
       puts "Now using #{ENV['HOME']}/.cilantro.git. Type exit to return"
       exec "bash --login"
     end
+  when 'generate'
+puts 'got generate'
+    generator = Cilantro::Generator.new
+puts 1
+    generator.create :framework
+puts 2
+    generator.create :controller, :post
+puts 3
+    generator.create :view, :post
+puts 4
+    generator.create :model, :post
+puts 5
   end
 rescue SyntaxError, LoadError => e
   puts "Error: #{e}\n#{e.backtrace.join("\n")}"
