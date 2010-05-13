@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joshaven Potter"]
-  s.date = %q{2010-05-06}
+  s.date = %q{2010-05-13}
   s.description = %q{A framework build on top of Sinatra, boasting automagic gem management, auto-reloading in development, and an innovative way to manage templates.}
   s.email = %q{yourtech@gmail.com}
   s.executables = ["cilantro", "install"]
@@ -23,10 +23,11 @@ Gem::Specification.new do |s|
      "README.md",
      "Rakefile",
      "TODO.md",
-     "app/views/default_error_page.haml",
+     "VERSION",
      "bin/cilantro",
      "bin/install",
      "cilantro.gemspec",
+     "cilantro.gemspec.original",
      "config.ru",
      "config/init.rb",
      "config/unicorn.conf",
@@ -37,11 +38,22 @@ Gem::Specification.new do |s|
      "lib/cilantro/base.rb",
      "lib/cilantro/controller.rb",
      "lib/cilantro/dependencies.rb",
+     "lib/cilantro/generator.rb",
+     "lib/cilantro/generator/README.md",
+     "lib/cilantro/generator/Rakefile",
+     "lib/cilantro/generator/config.ru",
+     "lib/cilantro/generator/database.yml",
+     "lib/cilantro/generator/default_controller.erb",
+     "lib/cilantro/generator/default_model.erb",
+     "lib/cilantro/generator/default_view.erb",
+     "lib/cilantro/generator/init.rb",
+     "lib/cilantro/generator/unicorn.conf",
      "lib/cilantro/sinatra.rb",
      "lib/cilantro/system/mysql_fix.rb",
      "lib/cilantro/templater.rb",
      "lib/cilantro/templater/bootstrap.rb",
      "lib/cilantro/templater/erb.rb",
+     "lib/cilantro/templater/erubis.rb",
      "lib/cilantro/templater/haml.rb",
      "lib/cilantro/templater/markdown.rb",
      "lib/cilantro/templater/plain.rb",
@@ -49,6 +61,7 @@ Gem::Specification.new do |s|
      "spec/cilantro/auto_reload_spec.rb",
      "spec/cilantro/base_spec.rb",
      "spec/cilantro/controller_spec.rb",
+     "spec/cilantro/generator_spec.rb",
      "spec/cilantro/templater_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
@@ -66,6 +79,7 @@ Gem::Specification.new do |s|
     "spec/cilantro/auto_reload_spec.rb",
      "spec/cilantro/base_spec.rb",
      "spec/cilantro/controller_spec.rb",
+     "spec/cilantro/generator_spec.rb",
      "spec/cilantro/templater_spec.rb",
      "spec/spec_helper.rb"
   ]
