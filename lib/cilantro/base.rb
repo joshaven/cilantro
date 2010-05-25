@@ -14,41 +14,44 @@ module Cilantro
     end
 
     def load_config(env=nil)
-      # TODO: What is the purpose of the following line?  Why make a variable for a local method?
+      # override env with given env and set local env variable
       env ||= self.env(env)
 
+      # Setup the path unless already done
+      # TODO: Dry this... it is done in so many places...
       $: << APP_ROOT unless $:.include?(APP_ROOT)
-      $: << APP_ROOT+'/lib' unless $:.include?(APP_ROOT+'/lib')
+      $: << File.join(APP_ROOT,'lib') unless $:.include?(File.join(APP_ROOT,'lib'))
 
       # Prepare our dependency-loading environment
       require File.join CILANTRO_ROOT, 'lib', 'cilantro', 'dependencies'
 
       # Beginning with env, we determine which pieces of the app's environment need to be loaded.
-        # If in development or production mode, we need to load up Sinatra:
-        # puts @something_changed ? "Reloading the app..." : "Loading Cilantro environment #{env.inspect}" unless env == :test
-        puts @reloader.app_updated? ? "Changes detected, Reloading the app..." : "Loading Cilantro environment #{env.inspect}" if @reloader.is_a?(Cilantro::AutoReloader) && env != :test
-        if [:development, :test, :production].include?(env)
-          require File.join CILANTRO_ROOT, 'lib', 'cilantro', 'sinatra'
-          set_options(
-            :static => true,
-            :public => 'public',
-            :server => (auto_reload ? 'thin_cilantro_proxy' : 'thin'),
-            :logging => true,
-            :raise_errors => (env == :production),
-            :show_exceptions => !(env == :production),
-            :environment => env
-          )
-        end
+      # If in development or production mode, we need to load up Sinatra:
+      # puts @something_changed ? "Reloading the app..." : "Loading Cilantro environment #{env.inspect}" unless env == :test
+      puts @reloader.app_updated? ? "Changes detected, Reloading the app..." : "Loading Cilantro environment #{env.inspect}" if @reloader.is_a?(Cilantro::AutoReloader) && env != :test
+      if [:development, :test, :production].include?(env)
+        require File.join CILANTRO_ROOT, 'lib', 'cilantro', 'sinatra'
+        set_options(
+          :static => true,
+          :public => 'public',
+          :server => (auto_reload ? 'thin_cilantro_proxy' : 'thin'),
+          :logging => true,
+          :raise_errors => (env == :production),
+          :show_exceptions => !(env == :production),
+          :environment => env
+        )
+      end
       # ****
       @config_loaded = true
     end
 
+    # Entry point after Cilantro has been required... This will load the proper cilantro environment
     def load_environment(env=nil)
       env ||= self.env(env)
       load_config(env) unless @config_loaded
 
       # Load the app pre-environment. This reloads with auto-reloading.
-      load 'config/init.rb'
+      load File.join(APP_ROOT, 'config', 'init.rb')
 
       # If config/init sets auto-reload, then don't load the rest of the app - save that for the auto-spawned processes.
       return false if auto_reload && require(File.join CILANTRO_ROOT, 'lib', 'cilantro', 'auto_reload')
@@ -57,6 +60,7 @@ module Cilantro
         # lib/*.rb - those already loaded won't be reloaded.
         Dir.glob("lib/*.rb").each {|file| require file.split(/\//).last }
         # app/models/*.rb
+        setup_database # ensure that DataMapper is connected to the database
         Dir.glob("app/models/*.rb").each {|file| require file}
         # app/controllers/*.rb UNLESS in irb
         Dir.glob("app/controllers/*.rb").each {|file| require file} if [:development, :production, :test].include?(env)
