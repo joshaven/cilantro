@@ -42,10 +42,11 @@ module Cilantro
       write_to_file File.join(APP_ROOT,'config.ru'), get_template('config.ru')
       write_to_file File.join(APP_ROOT,'config','database.yml'), get_template('database.yml')
       write_to_file File.join(APP_ROOT,'gems','gemrc.yml'), get_template('gemrc.yml')
+      write_to_file File.join(APP_ROOT,'tasks','rspec.rake'), get_template('rspec.rake')
     end
   
     def default_model(name)
-      get_template 'default_model.erb', {:name => name}
+      get_template 'default_model.erb', {:name => name.singularize}
     end
     
     def default_view(name)
@@ -53,7 +54,7 @@ module Cilantro
     end
     
     def default_controller(name)
-      get_template 'default_controller.erb', {:name => name}
+      get_template 'default_controller.erb', {:name => name.pluralize}
     end
   
     # Write a string or array(of lines of text) to the given full path
