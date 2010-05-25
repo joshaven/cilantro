@@ -10,10 +10,12 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "cilantro"
     gem.summary = %Q{A Web Framework based on Sinatra}
+    gem.platform    = Gem::Platform::RUBY
     gem.description = %Q{A framework build on top of Sinatra, boasting automagic gem management, auto-reloading in development, and an innovative way to manage templates.}
     gem.email = "yourtech@gmail.com"
     gem.homepage = "http://github.com/joshaven/cilantro"
     gem.authors = ["Joshaven Potter"]
+    gem.test_files  = FileList['spec/**/*.rb']
     gem.add_dependency "rack", ">= 1.0"
     gem.add_development_dependency "rspec", ">= 1.2.9"
     gem.add_development_dependency 'dm-core',     '~> 0.10.2' 
