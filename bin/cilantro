@@ -18,7 +18,7 @@ require 'optparse'
 # added by Joshaven to ensure that the cilantro gem is loaded
 begin
   require 'cilantro'
-rescue
+rescue LoadError
   require 'rubygems'
   require 'cilantro'
 end
