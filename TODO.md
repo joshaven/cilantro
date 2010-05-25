@@ -9,3 +9,6 @@ Goal: to be able to run a cilantro command from the command prompt to build a ap
 
 # Considerations
 * checkout Beacon: http://github.com/foca/beacon
+
+# General todo's
+* the path is ensured to contain the APP_ROOT & lib in many places... dry it up. > search for "$: <<"
