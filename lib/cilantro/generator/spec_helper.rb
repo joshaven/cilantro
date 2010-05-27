@@ -14,6 +14,8 @@ dependency 'spec', :gem => 'rspec', :env => :test
 dependency 'rack/test', :gem => 'rack-test', :env => :test
 dependency 'sinatra/base'
 
+# # moc_responce helper, uncomment to use
+# # 
 # # Example useage:
 # #   response = mock_responce '/test', :get
 # #   response.body.should eql("Hello World")
@@ -21,8 +23,3 @@ dependency 'sinatra/base'
 #   request = Rack::MockRequest.env_for(path, 'HTTP_VERSION' => '1.1', 'REQUEST_METHOD' => verb.to_s.upcase)
 #   Rack::MockResponse.new *Rack::Chunked.new(app).call(request)
 # end
-
-# Remove this test and generate some of your own
-describe :Project
-  it 'should have some tests.'
-end

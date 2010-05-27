@@ -33,7 +33,7 @@ module Cilantro
         File.join(APP_ROOT,'public','images'),
         File.join(APP_ROOT,'public','javascripts'),
         File.join(APP_ROOT,'public','stylesheets'),
-        File.join(APP_ROOT,'tasks')
+        File.join(APP_ROOT,'tasks'),
         File.join(APP_ROOT,'spec')
       ].each {|path| ensure_path path}
       write_to_file File.join(APP_ROOT,'README.md'), get_template('README.md')
@@ -45,6 +45,7 @@ module Cilantro
       write_to_file File.join(APP_ROOT,'gems','gemrc.yml'), get_template('gemrc.yml')
       write_to_file File.join(APP_ROOT,'tasks','rspec.rake'), get_template('rspec.rake')
       write_to_file File.join(APP_ROOT,'spec','spec_helper.rb'), get_template('spec_helper.rb')
+      write_to_file File.join(APP_ROOT,'spec','example_spec.rb'), get_template('example_spec.rb')
     end
   
     def default_model(name)
