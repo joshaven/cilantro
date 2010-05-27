@@ -1,6 +1,8 @@
 # In progress
 Specking & creating generators... 
-Goal: to be able to run a cilantro command from the command prompt to build a application framework
+
+* Cleanup generator script... currently you have to be in your project folder and then you run 'cilantro generate'  
+  Should support 'cilantro generate project_name
 
 # Changes for next version 
 * Controller-specific Error Catching
