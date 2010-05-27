@@ -5,14 +5,15 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cilantro}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joshaven Potter"]
-  s.date = %q{2010-05-13}
+  s.date = %q{2010-05-27}
+  s.default_executable = %q{cilantro}
   s.description = %q{A framework build on top of Sinatra, boasting automagic gem management, auto-reloading in development, and an innovative way to manage templates.}
   s.email = %q{yourtech@gmail.com}
-  s.executables = ["cilantro", "install"]
+  s.executables = ["cilantro"]
   s.extra_rdoc_files = [
     "README.md"
   ]
@@ -25,7 +26,6 @@ Gem::Specification.new do |s|
      "TODO.md",
      "VERSION",
      "bin/cilantro",
-     "bin/install",
      "cilantro.gemspec",
      "cilantro.gemspec.original",
      "config.ru",
@@ -46,7 +46,11 @@ Gem::Specification.new do |s|
      "lib/cilantro/generator/default_controller.erb",
      "lib/cilantro/generator/default_model.erb",
      "lib/cilantro/generator/default_view.erb",
+     "lib/cilantro/generator/example_spec.rb",
+     "lib/cilantro/generator/gemrc.yml",
      "lib/cilantro/generator/init.rb",
+     "lib/cilantro/generator/rspec.rake",
+     "lib/cilantro/generator/spec_helper.rb",
      "lib/cilantro/generator/unicorn.conf",
      "lib/cilantro/sinatra.rb",
      "lib/cilantro/system/mysql_fix.rb",
@@ -73,7 +77,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/joshaven/cilantro}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{A Web Framework based on Sinatra}
   s.test_files = [
     "spec/cilantro/auto_reload_spec.rb",
@@ -88,7 +92,7 @@ Gem::Specification.new do |s|
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rack>, [">= 1.0"])
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
       s.add_development_dependency(%q<dm-core>, ["~> 0.10.2"])
