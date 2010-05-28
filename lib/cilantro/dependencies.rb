@@ -79,26 +79,21 @@ module Kernel
     debugger
   end
 
+  # TODO: support all gem installation options, currently, the options hash will only deal with :version
   def dependency(name, options={})
     if [options[:env] ||= ENV['RACK_ENV']].flatten.collect {|e| e.to_s}.include? ENV['RACK_ENV']
       begin
         require name
-      rescue LoadError => e
+      rescue LoadError
         if File.directory?("#{APP_ROOT}/gems") && File.writable?("#{APP_ROOT}/gems")
-          if e.respond_to?(:name) && e.respond_to?(:version_requirement)
-            puts "Installing #{e.name}#{" -v \""+e.version_requirement.to_s+'"' if e.version_requirement}..."
-            puts `gem install --config-file gems/gemrc.yml #{"-v \""+e.version_requirement.to_s+'"' if e.version_requirement} #{e.name}`
-          else
-            puts "Installing #{options[:gem] || name}#{" -v "+options[:version] if options[:version]}..."
-            puts `gem install --config-file gems/gemrc.yml #{"-v "+options[:version] if options[:version]} #{options[:gem] || name}`
-          end
+          puts "Installing gem locally: #{options[:gem] || name}..."
+          puts `gem install --config-file gems/gemrc.yml #{'-v "'+options[:version].gsub(' ','')+'"' if options[:version]} #{options[:gem] || name}`
           Gem.use_paths("#{APP_ROOT}/gems", ["#{APP_ROOT}/gems"])
           begin
             require name
-          rescue LoadError
-            puts "(didn't work installing `#{name}' in path: #{Dir.pwd})"
-            puts "Load Path: #{$:.join("\n")}"
-            puts "Gem Path: #{Gem.path.inspect}"
+          rescue LoadError => e
+            puts "(Error installing gem: `#{name}')\n#{e.inspect}"
+            puts ">> Load Path: #{$:.join("\n")}\n>> Gem Path: #{Gem.path.inspect}"
           end
         else
           raise
