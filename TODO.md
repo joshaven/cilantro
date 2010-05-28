@@ -3,6 +3,7 @@ Specking & creating generators...
 
 * Cleanup generator script... currently you have to be in your project folder and then you run 'cilantro generate'  
   Should support 'cilantro generate project_name
+* Ensure that the generated project runs by its self and does something useful...
 
 # Changes for next version 
 * Controller-specific Error Catching
