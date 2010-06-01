@@ -8,5 +8,6 @@ dependency 'sinatra/base', :gem => 'sinatra'
 Sinatra.send(:remove_const, :Templates)
 class Application < Sinatra::Base
   include Cilantro::Application
+  include Cilantro::Templater if defined? Cilantro::Templater
   enable :sessions
 end
