@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joshaven Potter"]
-  s.date = %q{2010-05-27}
+  s.date = %q{2010-06-01}
   s.default_executable = %q{cilantro}
   s.description = %q{A framework build on top of Sinatra, boasting automagic gem management, auto-reloading in development, and an innovative way to manage templates.}
   s.email = %q{yourtech@gmail.com}
@@ -27,11 +27,9 @@ Gem::Specification.new do |s|
      "VERSION",
      "bin/cilantro",
      "cilantro.gemspec",
-     "cilantro.gemspec.original",
      "config.ru",
      "config/init.rb",
      "config/unicorn.conf",
-     "gems/gemrc.yml",
      "lib/cilantro.rb",
      "lib/cilantro/FileMonitor.rb",
      "lib/cilantro/auto_reload.rb",
