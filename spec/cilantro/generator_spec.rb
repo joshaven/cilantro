@@ -19,13 +19,15 @@ describe 'Cilantro' do
 
       it 'should creaate the proper model' do
         @generator.create(:model, :test).should be_true
-        expected = "class Test\n  include DataMapper::Resource\n\n  property :id, Serial\n  property :data, String\n  property :created_at, DateTime\n  property :updated_at, DateTime\nend\n"
+        # expected = "class Test\n  include DataMapper::Resource\n\n  property :id, Serial\n  property :data, String\n  property :created_at, DateTime\n  property :updated_at, DateTime\nend\n"
+        expected = "class Test\n  include DataMapper::Resource\n\n  property :id, Serial\n  property :data, String\n  property :created_at, DateTime\n  property :updated_at, DateTime\n  \n  # TODO: The following line ensures that this model has a database table, this should be removed for production use\n  begin self.first rescue self.auto_migrate! end\nend\n" 
         get_file_as_string(File.join(APP_ROOT, 'app', 'models', 'test.rb')).should == expected
       end
       
       it 'should creaate the proper controller' do
         @generator.create(:controller, :test).should be_true
-        expected = "class Test < Application\n  namespace '/'\n\n  get :home do\n    view :index\n  end\n\n  # Main page\n  get 'new_index' do\n    view :index\n  end\n\n  # This is not yet limited to just one controller or namespace.\n  error do\n    Cilantro.report_error(env['sinatra.error'])\n    view :default_error_page\n  end\nend\n"
+        # expected = "class Test < Application\n  namespace '/'\n\n  get :home do\n    view :index\n  end\n\n  # Main page\n  get 'new_index' do\n    view :index\n  end\n\n  # This is not yet limited to just one controller or namespace.\n  error do\n    Cilantro.report_error(env['sinatra.error'])\n    view :default_error_page\n  end\nend\n"
+        expected = "class Testses < Application\n  namespace '/'\n\n  get :home do\n    view :index\n  end\n\n  # Main page\n  get 'new_index' do\n    view :index\n  end\n\n  # This is not yet limited to just one controller or namespace.\n  error do\n    Cilantro.report_error(env['sinatra.error'])\n    view :default_error_page\n  end\nend\n"
         get_file_as_string(File.join(APP_ROOT, 'app', 'controllers', 'test.rb')).should == expected
       end
       
