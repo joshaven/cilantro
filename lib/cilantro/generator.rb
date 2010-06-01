@@ -19,11 +19,11 @@ module Cilantro
 
       case type.to_s.downcase
       when 'view'
-        path = File.join(APP_ROOT, 'app', type.pluralize, name, 'new.html.haml')
+        path = APP_ROOT/'app'/type.pluralize/name/'new.html.haml'
       when 'controller'
-        path = File.join(APP_ROOT, 'app', type.pluralize, name.pluralize + '.rb')  
+        path = APP_ROOT/'app'/type.pluralize/name.pluralize + '.rb'
       when 'model'
-        path = File.join(APP_ROOT, 'app', type.pluralize, name + '.rb')  
+        path = APP_ROOT/'app'/type.pluralize/name + '.rb'
       end
 
       write_to_file(path, data || self.send("default_#{type}", name))
@@ -31,29 +31,29 @@ module Cilantro
 
   private
     def default_framework_structure()
-      [ File.join(APP_ROOT,'app','models'),
-        File.join(APP_ROOT,'app','controllers'),
-        File.join(APP_ROOT,'app','views'),
-        File.join(APP_ROOT,'config'),
-        File.join(APP_ROOT,'db'),
-        File.join(APP_ROOT,'gems'),
-        File.join(APP_ROOT,'lib'),
-        File.join(APP_ROOT,'public','images'),
-        File.join(APP_ROOT,'public','javascripts'),
-        File.join(APP_ROOT,'public','stylesheets'),
-        File.join(APP_ROOT,'tasks'),
-        File.join(APP_ROOT,'spec')
+      [ APP_ROOT/'app'/'models',
+        APP_ROOT/'app'/'controllers',
+        APP_ROOT/'app'/'views',
+        APP_ROOT/'config',
+        APP_ROOT/'db',
+        APP_ROOT/'gems',
+        APP_ROOT/'lib',
+        APP_ROOT/'public'/'images',
+        APP_ROOT/'public'/'javascripts',
+        APP_ROOT/'public'/'stylesheets',
+        APP_ROOT/'tasks',
+        APP_ROOT/'spec'
       ].each {|path| ensure_path path}
-      write_to_file File.join(APP_ROOT,'README.md'), get_template('README.md')
-      write_to_file File.join(APP_ROOT,'Rakefile'), get_template('Rakefile')
-      write_to_file File.join(APP_ROOT,'config','init.rb'), get_template('init.rb')
-      write_to_file File.join(APP_ROOT,'config','unicorn.conf'), get_template('unicorn.conf')
-      write_to_file File.join(APP_ROOT,'config.ru'), get_template('config.ru')
-      write_to_file File.join(APP_ROOT,'config','database.yml'), get_template('database.yml')
-      write_to_file File.join(APP_ROOT,'gems','gemrc.yml'), get_template('gemrc.yml')
-      write_to_file File.join(APP_ROOT,'tasks','rspec.rake'), get_template('rspec.rake')
-      write_to_file File.join(APP_ROOT,'spec','spec_helper.rb'), get_template('spec_helper.rb')
-      write_to_file File.join(APP_ROOT,'spec','example_spec.rb'), get_template('example_spec.rb')
+      write_to_file APP_ROOT/'README.md', get_template('README.md')
+      write_to_file APP_ROOT/'Rakefile', get_template('Rakefile')
+      write_to_file APP_ROOT/'config'/'init.rb', get_template('init.rb')
+      write_to_file APP_ROOT/'config'/'unicorn.conf', get_template('unicorn.conf')
+      write_to_file APP_ROOT/'config.ru', get_template('config.ru')
+      write_to_file APP_ROOT/'config'/'database.yml', get_template('database.yml')
+      write_to_file APP_ROOT/'gems'/'gemrc.yml', get_template('gemrc.yml')
+      write_to_file APP_ROOT/'tasks'/'rspec.rake', get_template('rspec.rake')
+      write_to_file APP_ROOT/'spec'/'spec_helper.rb', get_template('spec_helper.rb')
+      write_to_file APP_ROOT/'spec'/'example_spec.rb', get_template('example_spec.rb')
     end
   
     def default_model(name)
@@ -99,9 +99,9 @@ module Cilantro
 
     def get_template(name, locals={})
       if /\.erb$/ =~ name
-        read_erb File.join(CILANTRO_ROOT,'lib','cilantro','generator', name), locals
+        read_erb CILANTRO_ROOT/'lib'/'cilantro'/'generator'/name, locals
       else
-        IO.read File.join(CILANTRO_ROOT,'lib','cilantro','generator', name)
+        IO.read CILANTRO_ROOT/'lib'/'cilantro'/'generator'/name
       end
     end
   end

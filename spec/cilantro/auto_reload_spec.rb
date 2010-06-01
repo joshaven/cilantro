@@ -1,4 +1,4 @@
-require File.expand_path File.join(File.dirname(__FILE__), '..', 'spec_helper')
+require File.expand_path File.join(File.dirname(__FILE__),'..','spec_helper')
 require 'fileutils'
 
 describe 'Cilantro' do
@@ -47,12 +47,12 @@ end
 
 
 def write_to_view(name, string)
-  FileUtils.mkdir_p File.join(APP_ROOT, 'app', 'views')
-  view_path = File.join APP_ROOT, 'app', 'views', "#{name}.haml"
+  FileUtils.mkdir_p APP_ROOT/'app'/'views'
+  view_path = APP_ROOT/'app'/'views'/"#{name}.haml"
   File.open(view_path, 'w') {|f| f.write(string) }
 end
 
 def cleanup_view(name)
-  path = File.join(APP_ROOT, 'app')
+  path = APP_ROOT/'app'
   FileUtils.remove_dir path if File.exists?(path)
 end

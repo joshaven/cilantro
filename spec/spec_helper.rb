@@ -2,12 +2,14 @@ ENV['RACK_ENV'] = 'test'
 
 begin
   require 'rack'
+  require 'extlib'
 rescue LoadError
   require 'rubygems'
   require 'rack'
+  require 'extlib'
 end
 
-require File.expand_path(File.join File.dirname(__FILE__), '..', 'lib', 'cilantro')
+require File.expand_path(File.join File.dirname(__FILE__), '..', 'lib', 'cilantro') unless defined?(Cilantro)
 Cilantro.load_environment
 
 dependency 'spec', :gem => 'rspec', :env => :test

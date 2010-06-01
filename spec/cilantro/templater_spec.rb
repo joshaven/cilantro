@@ -21,12 +21,12 @@ describe :Cilantro do
     before :all do
       @name = 'test_berry_layout'
       @ext = 'haml'
-      @layout_dir = File.join(APP_ROOT, 'app', 'views', 'layouts')
+      @layout_dir = APP_ROOT/'app'/'views'/'layouts'
       @layout_content = "<p>Hello World</p>"
       # @layout_helper_content = %q{module Cilantro; def self.smashing_good_time;true;end;end}
       @layout_helper_content = %q{def smashing_good_time();true;end}
-      @layout_path = File.join @layout_dir, "#{@name}.#{@ext}"
-      @layout_helper_path = File.join @layout_dir, "#{@name}"
+      @layout_path = @layout_dir/"#{@name}.#{@ext}"
+      @layout_helper_path = @layout_dir/"#{@name}"
 
       # make directory & file as needed
       FileUtils.mkdir_p @layout_dir
@@ -35,7 +35,7 @@ describe :Cilantro do
     end
     
     after :all do
-      FileUtils.remove_dir File.join(APP_ROOT, 'app')
+      FileUtils.remove_dir APP_ROOT/'app'
     end
     
     it 'should read layout from the proper directory' do

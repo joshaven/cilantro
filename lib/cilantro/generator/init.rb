@@ -21,7 +21,7 @@ Cilantro.auto_reload = true
 
 ###################
 # Section: Dependencies and Libraries
-require File.join CILANTRO_ROOT, 'lib', 'cilantro', 'templater'
+require CILANTRO_ROOT/'lib'/'cilantro'/'templater'
 # dependency 'erubis'  # TODO: uncomment for faster erb (uses C bindings to do erb)
 
 

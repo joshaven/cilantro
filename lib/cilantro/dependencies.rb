@@ -14,7 +14,7 @@ module Cilantro
       else
         gems[name] = options
       end
-      if env == :development
+      if env == 'development'
         open(".gems", 'w') do |f|
           gems.keys.sort.each do |name|
             options = gems[name]
@@ -31,7 +31,7 @@ module Cilantro
       Dir.chdir APP_ROOT unless Dir.pwd == APP_ROOT
       
       gempath = begin
-        YAML::load_file(File.join APP_ROOT, 'gems', 'gemrc.yml')['gempath'].first
+        YAML::load_file(APP_ROOT/'gems'/'gemrc.yml')['gempath'].first
       rescue
         "#{APP_ROOT}/gems"
       end

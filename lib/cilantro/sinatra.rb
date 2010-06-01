@@ -1,4 +1,4 @@
-require File.join(CILANTRO_ROOT, 'lib', 'cilantro', 'dependencies')
+require CILANTRO_ROOT/'lib'/'cilantro'/'dependencies'
 
 dependency 'rack'
 dependency 'thin'

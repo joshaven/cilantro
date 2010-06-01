@@ -1,12 +1,12 @@
-require File.expand_path File.join(File.dirname(__FILE__), '..', 'spec_helper')
+require File.expand_path File.join(File.dirname(__FILE__),'..','spec_helper')
 
 describe 'Cilantro' do
   describe 'environment' do
     it 'should get & set env' do
-      Cilantro.env.should eql(:test)
-      Cilantro.env(:spec).should eql(:spec)
-      Cilantro.env.should eql(:spec)
-      Cilantro.env(:test).should eql(:test) # just being nice and resetting the environment
+      Cilantro.env.should eql('test')
+      Cilantro.env(:spec).should eql('spec')
+      Cilantro.env.should eql('spec')
+      Cilantro.env(:test).should eql('test') # just being nice and resetting the environment
     end
 
     it 'should be linked to the Sinatra ::Application' do
@@ -29,40 +29,40 @@ describe 'Cilantro' do
       
       it 'should have default server_options' do
         Cilantro.server_options.should == {
-          :environment=>:test, 
+          :environment=>'test', 
           :static=>true, 
-          :public=>"public", 
-          :server=>"thin", 
+          :public=>'public', 
+          :server=>'thin', 
           :logging=>true, 
           :raise_errors=>false, 
           :show_exceptions=>true
-        }
+        }        
       end
     end
 
     describe 'paths' do
       it 'should load the lib folder into the gem path' do
-        $:.should include(File.join APP_ROOT, '/lib')
+        $:.should include(APP_ROOT/'/lib')
       end
 
       it 'should know the paths' do
         # log_path & pid_path
-        if File.exist?(File.join(APP_ROOT, 'log')) && File.writable?(File.join(APP_ROOT, 'log'))
-          Cilantro.log_path.should == File.join(APP_ROOT, 'log')
-          Cilantro.pid_path.should == File.join(APP_ROOT, 'log')
-        elsif File.exist?(File.join(APP_ROOT, 'config')) && File.writable?(File.join(APP_ROOT, 'config'))
-          Cilantro.log_path.should == File.join(APP_ROOT, 'config')
-          Cilantro.pid_path.should == File.join(APP_ROOT, 'config')
+        if File.exist?(APP_ROOT/'log') && File.writable?(APP_ROOT/'log')
+          Cilantro.log_path.should == APP_ROOT/'log'
+          Cilantro.pid_path.should == APP_ROOT/'log'
+        elsif File.exist?(APP_ROOT/'config') && File.writable?(APP_ROOT/'config')
+          Cilantro.log_path.should == APP_ROOT/'config'
+          Cilantro.pid_path.should == APP_ROOT/'config'
         else
-          Cilantro.log_path.should == File.join(Dir.pwd)
-          Cilantro.pid_path.should == File.join(Dir.pwd)
+          Cilantro.log_path.should == Dir.pwd
+          Cilantro.pid_path.should == Dir.pwd
         end
       end
     end
     
     describe 'prequisites required' do
       it 'should have already required cilantro/dependencies' do
-        require(File.join(CILANTRO_ROOT, 'lib', 'cilantro', 'dependencies')).should be_false
+        require(CILANTRO_ROOT/'lib'/'cilantro'/'dependencies').should be_false
       end
     
       it 'should have already loaded all lib, model & controller files' do

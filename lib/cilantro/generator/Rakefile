@@ -28,7 +28,7 @@ task :production_db => [:load_cilantro] do
 end
 
 # Load any app level custom rakefile extensions from lib/tasks
-tasks_path = File.join(File.dirname(__FILE__), "tasks")
+tasks_path = File.dirname(__FILE__)/"tasks"
 Dir["#{tasks_path}/*.rake"].each do |rake_file|
   begin
     load rake_file
