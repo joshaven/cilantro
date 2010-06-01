@@ -30,6 +30,7 @@ module Cilantro
       # puts @something_changed ? "Reloading the app..." : "Loading Cilantro environment #{env.inspect}" unless env == :test
       puts @reloader.app_updated? ? "Changes detected, Reloading the app..." : "Loading Cilantro environment #{env.inspect}" if @reloader.is_a?(Cilantro::AutoReloader) && env != :test
       if [:development, :test, :production].include?(env)
+        # define the Application class which inherits from Sinatra::Base
         require File.join CILANTRO_ROOT, 'lib', 'cilantro', 'sinatra'
         set_options(
           :static => true,
@@ -112,16 +113,17 @@ module Cilantro
               cfg = (cfg[env] || cfg[env.to_s]) if (cfg[env] || cfg[env.to_s]).is_a?(Hash)
               cfg = (cfg[:database] || cfg['database']) if (cfg[:database] || cfg['database']).is_a?(Hash)
               cfg
-            else
+            else # no database config... loading in RAM
               false
             end
           end
           
-          ## permit use without a database
-          # unless cfg
-          #   warn "Cannot set up the database: No database config file (config/database.#{env}.yml or config/database.yml) present!"
-          #   exit
-          # end
+          ## permit use without a database by nominating an in-memory-database
+          unless cfg
+            warn  "from: Cilantro.database_config: No Database specified, nominating a non-persistent RAM based database.  " +
+                  "Please specify a database by creating #{APP_ROOT}/config/database.yml"
+            cfg = 'sqlite3::memory:'
+          end
 
           cfg
         end
