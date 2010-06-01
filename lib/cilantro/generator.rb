@@ -3,6 +3,9 @@ require 'extlib'
 
 module Cilantro
   class Generator
+    # eg:  create model People
+    # eg:  create controller People
+    # eg:  create view People
     def create(type, name=nil, data=nil)
       type = type.to_s; name = name.to_s
       unless %w(model controller view framework).include? type
@@ -11,16 +14,21 @@ module Cilantro
       
       return default_framework_structure() if type == 'framework'
 
-      if type=='view'
-        path = File.join(APP_ROOT, 'app', type.pluralize, name.snake_case, 'new.haml')
-      else
-        path = File.join(APP_ROOT, 'app', type.pluralize, name.snake_case + '.rb')  
+      # Normalize name as: singular snake_case
+      name = name.gsub(/\W/, '_').snake_case.singularize
+
+      case type.to_s.downcase
+      when 'view'
+        path = File.join(APP_ROOT, 'app', type.pluralize, name, 'new.html.haml')
+      when 'controller'
+        path = File.join(APP_ROOT, 'app', type.pluralize, name.pluralize + '.rb')  
+      when 'model'
+        path = File.join(APP_ROOT, 'app', type.pluralize, name + '.rb')  
       end
 
-      write_to_file(path, self.send("default_#{type}", name))
+      write_to_file(path, data || self.send("default_#{type}", name))
     end
-    
-    
+
   private
     def default_framework_structure()
       [ File.join(APP_ROOT,'app','models'),
