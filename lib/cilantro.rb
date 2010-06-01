@@ -1,8 +1,14 @@
-unless $LOADED_FEATURES.include?('lib/cilantro.rb') or $LOADED_FEATURES.include?('cilantro.rb')
-  # APP_ROOT = File.expand_path(File.join File.dirname(__FILE__), "..") unless defined?(APP_ROOT)
-  APP_ROOT = Dir.pwd unless defined?(APP_ROOT)
-  CILANTRO_ROOT = File.expand_path(File.join File.dirname(__FILE__), "..") unless defined?(CILANTRO_ROOT)
+begin 
+  require 'extlib'
+rescue LoadError
+  require 'rubygems'
+  retry
+end
 
+APP_ROOT = Dir.pwd unless defined?(APP_ROOT)
+CILANTRO_ROOT = File.expand_path(File.join File.dirname(__FILE__), "..") unless defined?(CILANTRO_ROOT)
+
+unless $LOADED_FEATURES.include?(File.join(CILANTRO_ROOT, 'lib', 'cilantro.rb')) or $LOADED_FEATURES.include?('lib/cilantro.rb') or $LOADED_FEATURES.include?('cilantro.rb')
   IRB.conf[:PROMPT_MODE] = :SIMPLE if ::Object.const_defined?(:IRB)
   
   # load the core of Cilantro
