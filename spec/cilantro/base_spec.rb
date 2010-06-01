@@ -62,7 +62,7 @@ describe 'Cilantro' do
     
     describe 'prequisites required' do
       it 'should have already required cilantro/dependencies' do
-        require('cilantro/dependencies').should be_false
+        require(File.join(CILANTRO_ROOT, 'lib', 'cilantro', 'dependencies')).should be_false
       end
     
       it 'should have already loaded all lib, model & controller files' do
