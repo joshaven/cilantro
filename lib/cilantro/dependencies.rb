@@ -96,10 +96,17 @@ module Kernel
             puts ">> Load Path: #{$:.join("\n")}\n>> Gem Path: #{Gem.path.inspect}"
           end
         else
-          raise
+          raise 'UNKNOWN ERROR see cilantro/dependencies.rb'
         end
       end
+    else # In case you don't have local gems, load the system gems or warn when they need to be installed
+      begin
+        require name
+      rescue LoadError
+        raise "ERROR: cannot require #{name} try:\n sudo gem install #{name}"
+      end
     end
+    
     Cilantro.add_gem(options[:gem] || name, options)
   end
 end
