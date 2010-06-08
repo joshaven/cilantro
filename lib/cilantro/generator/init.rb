@@ -27,14 +27,13 @@ require CILANTRO_ROOT/'lib'/'cilantro'/'templater'
 
 ###################
 # Section: Database Setup
-dependency 'sqlite3', :gem => 'sqlite3-ruby', :env => :development
-dependency 'do_sqlite3', :env => :development
-# dependency 'do_mysql', :env => :production  # uncomment & edit your config/database.yml for mysql
 dependency 'dm-core'
-dependency 'data_objects'
+dependency 'dm-sqlite-adapter', :env => :development
+# dependency 'do_mysql', :env => :production  # uncomment & edit your config/database.yml for mysql
 dependency 'dm-migrations'
-#dependency 'dm-types'        # uncomment for more datamapper types
-#dependency 'dm-validations'  # uncomment for datamapper validations
+dependency 'dm-types'
+dependency 'dm-validations'
+dependency 'dm-timestamps'
 
 # The following will load the Cilantro app
 Cilantro.load_environment :irb if Cilantro.env.nil?
