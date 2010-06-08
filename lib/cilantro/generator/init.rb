@@ -36,9 +36,5 @@ dependency 'dm-migrations'
 #dependency 'dm-types'        # uncomment for more datamapper types
 #dependency 'dm-validations'  # uncomment for datamapper validations
 
-
-
-# Uncomment this to fire up a connection to the database using settings from config/database.yml config
-# It's configured for DataMapper by default, you can set up your own connection routine here instead.
-Cilantro.setup_database
-Cilantro.load_environment :irb unless ENV['RACK_ENV']
+# The following will load the Cilantro app
+Cilantro.load_environment :irb if Cilantro.env.nil?
