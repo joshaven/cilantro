@@ -3,7 +3,7 @@ require CILANTRO_ROOT/'lib'/'cilantro'/'system'/'mysql_fix' if File.exists?(CILA
 module Cilantro
   class << self
     def env(e=nil)
-      e ? ENV['RACK_ENV']=e.to_s : ENV['RACK_ENV']||='development'
+      e ? ENV['RACK_ENV']=e.to_s : ENV['RACK_ENV']||=nil
     end
 
     attr_writer :auto_reload
@@ -12,9 +12,9 @@ module Cilantro
       $0 =~ /(^|\/)cilantro$/ && @auto_reload
     end
 
-    def load_config(env=nil)
+    def load_config(specified_env=nil)
       # override env with given env and set local env variable
-      env ||= self.env(env)
+      env(specified_env) unless specified_env.nil?
 
       # Setup the path unless already done
       # TODO: Dry this... it is done in so many places...
@@ -46,26 +46,36 @@ module Cilantro
     end
 
     # Entry point after Cilantro has been required... This will load the proper cilantro environment
-    def load_environment(env=nil)
-      env ||= self.env(env)
-      # env(specified_env)
-      load_config(env) unless @config_loaded
+    def load_environment(specified_env=nil)
+      # env ||= self.env(env)
+      env(specified_env) unless specified_env.nil?
+
+      load_config(env) unless @config_loaded unless env.nil?
 
       # Load the app pre-environment. This reloads with auto-reloading.
-      load APP_ROOT/'config'/'init.rb'
+      # load APP_ROOT/'config'/'init.rb'
+      require APP_ROOT/'config'/'init.rb'
 
       # If config/init sets auto-reload, then don't load the rest of the app - save that for the auto-spawned processes.
       return false if auto_reload && require(CILANTRO_ROOT/'lib'/'cilantro'/'auto_reload')
 
       # Lastly, we'll load the app files themselves: lib, models, then controllers
         # lib/*.rb - those already loaded won't be reloaded.
-        Dir.glob("lib/*.rb").each {|file| require file.split(/\//).last }
-        # app/models/*.rb
-        setup_database # ensure that DataMapper is connected to the database
-        Dir.glob("app/models/*.rb").each {|file| require file}
-        # app/controllers/*.rb UNLESS in irb
-        Dir.glob("app/controllers/*.rb").each {|file| require file} if [:development, :production, :test].include?(env)
+        Dir.glob(APP_ROOT/'lib'/'*.rb').each {|file| require file.split(/\//).last }
 
+        # app/models/*.rb
+        begin
+          try = 0
+          Dir.glob(APP_ROOT/'app'/'models'/'*.rb').each {|file| require file}
+        rescue
+          try += 1
+          setup_database # ensure that DataMapper is connected to the database
+          retry unless try > 1
+          raise "Could not load models, check model syntax or database settings"
+        end
+
+        # app/controllers/*.rb UNLESS in irb
+        Dir.glob(APP_ROOT/'app'/'controllers'/'*.rb').each {|file| require file} unless env == 'irb'
       return true
     end
 
