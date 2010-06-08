@@ -1,4 +1,6 @@
 require File.expand_path File.join(File.dirname(__FILE__),'..','spec_helper')
+require 'fileutils'
+
 
 describe 'Cilantro' do
   describe 'environment' do
@@ -20,7 +22,7 @@ describe 'Cilantro' do
     
       it 'should load the environment config' do
         Cilantro.config.should == {}
-        cfg_file = "#{APP_ROOT}/config/#{Cilantro.env}.yml"
+        cfg_file = "#{CILANTRO_ROOT}/config/#{Cilantro.env}.yml"
         File.open(cfg_file, 'w') {|f| f.write "--- \n:test: true\n" }
         Cilantro.instance_variable_set('@config', nil)
         Cilantro.config.should == {:test => true}
@@ -42,17 +44,17 @@ describe 'Cilantro' do
 
     describe 'paths' do
       it 'should load the lib folder into the gem path' do
-        $:.should include(APP_ROOT/'/lib')
+        $:.should include(CILANTRO_ROOT/'/lib')
       end
 
       it 'should know the paths' do
         # log_path & pid_path
-        if File.exist?(APP_ROOT/'log') && File.writable?(APP_ROOT/'log')
-          Cilantro.log_path.should == APP_ROOT/'log'
-          Cilantro.pid_path.should == APP_ROOT/'log'
-        elsif File.exist?(APP_ROOT/'config') && File.writable?(APP_ROOT/'config')
-          Cilantro.log_path.should == APP_ROOT/'config'
-          Cilantro.pid_path.should == APP_ROOT/'config'
+        if File.exist?(CILANTRO_ROOT/'log') && File.writable?(CILANTRO_ROOT/'log')
+          Cilantro.log_path.should == CILANTRO_ROOT/'log'
+          Cilantro.pid_path.should == CILANTRO_ROOT/'log'
+        elsif File.exist?(CILANTRO_ROOT/'config') && File.writable?(CILANTRO_ROOT/'config')
+          Cilantro.log_path.should == CILANTRO_ROOT/'config'
+          Cilantro.pid_path.should == CILANTRO_ROOT/'config'
         else
           Cilantro.log_path.should == Dir.pwd
           Cilantro.pid_path.should == Dir.pwd
@@ -65,10 +67,24 @@ describe 'Cilantro' do
         require(CILANTRO_ROOT/'lib'/'cilantro'/'dependencies').should be_false
       end
     
-      it 'should have already loaded all lib, model & controller files' do
-        Dir.glob("lib/*.rb").each {|f| require(f.split(/\//).last).should be_false }
-        Dir.glob("app/models/*.rb").each {|f| require(f).should be_false }
-        Dir.glob("app/controllers/*.rb").each {|f| require(f).should be_false}
+      it 'should load all lib, model & controller files when Cilantro.load_environment is called' do
+        FileUtils.mkdir_p CILANTRO_ROOT/'app'/'models'
+        FileUtils.mkdir_p CILANTRO_ROOT/'app'/'controllers'
+        File.open(CILANTRO_ROOT/'app'/'models'/'widget.rb', 'w') {|f| f.write "class Widget;end" }
+        File.open(CILANTRO_ROOT/'app'/'controllers'/'widgets.rb', 'w') {|f| f.write "class Widgets;end" }
+
+        Cilantro.load_environment
+      
+        Dir.glob('lib'/'*.rb').size.should > 0
+        Dir.glob('lib'/'*.rb').each {|f| require(f.split(/\//).last).should be_false }
+              
+        Dir.glob(CILANTRO_ROOT/'app'/'models'/'*.rb').size.should > 0
+        Dir.glob(CILANTRO_ROOT/'app'/'models'/'*.rb').each {|f| require(f).should be_false }
+    
+        Dir.glob(CILANTRO_ROOT/'app'/'controllers'/'*.rb').size.should > 0
+        Dir.glob(CILANTRO_ROOT/'app'/'controllers'/'*.rb').each {|f| require(f).should be_false}
+        
+        FileUtils.rm_r CILANTRO_ROOT/'app'
       end
     end
 
@@ -117,7 +133,7 @@ describe 'Cilantro' do
       end
     end
     
-    it "should listen on tcp" do
+    it "should listen on tcp, if this fails it may be due to port 5000 being in use at the onset of the test." do
       port_in_use?(5000).should be_false
       @pid = fork do
         server = Rack::Handler.get('thin')
