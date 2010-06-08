@@ -1,4 +1,4 @@
-require File.dirname(__FILE__)+'/cilantro/system/mysql_fix' if File.exists?(File.dirname(__FILE__)+'/cilantro/system/mysql_fix')
+require CILANTRO_ROOT/'lib'/'cilantro'/'system'/'mysql_fix' if File.exists?(CILANTRO_ROOT/'lib'/'cilantro'/'system'/'mysql_fix')
 
 module Cilantro
   class << self
