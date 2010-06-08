@@ -124,7 +124,7 @@ module Cilantro
           rts << rt
         end
       elsif in_path.is_a?(Symbol)
-        path = path_with_namespace('')
+        path = path_with_namespace(in_path)
         # warn "Route: #{method} #{path[0]}"
         # Save the namespace with this route
         application.namespaces["#{method} #{path[0]}"] = [self, namespace]
@@ -168,7 +168,7 @@ module Cilantro
         # Path should be sanitized to NOT begin with a slash, and OPTIONALLY end with a slash.
         # Scope + Path should be joined with a slash IF the path string does not begin with a '.'
         # (namespace + (path =~ /^\./ || path == '' ? '' : '/') + path).gsub(/\/\/+/,'/')
-        application.send(:compile, ns + path.gsub(/^\//,''))
+        application.send(:compile, ns + path.to_s.gsub(/^\//,''))
       end
     end
   end
