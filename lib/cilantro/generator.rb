@@ -12,7 +12,7 @@ module Cilantro
         raise 'The furst argument of the create method must be one of: model, controller, or view'
       end
       
-      return default_framework_structure() if type == 'framework'
+      return build_default_framework_structure() if type == 'framework'
 
       # Normalize name as: singular snake_case
       name = name.gsub(/\W/, '_').snake_case.singularize
@@ -30,7 +30,7 @@ module Cilantro
     end
 
   private
-    def default_framework_structure()
+    def build_default_framework_structure()
       [ APP_ROOT/'app'/'models',
         APP_ROOT/'app'/'controllers',
         APP_ROOT/'app'/'views',
