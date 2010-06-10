@@ -79,10 +79,10 @@ module Cilantro
     attr_accessor :name
     attr_reader :locals
 
-    def initialize(controller, name, locals={})
+    def initialize(controller, name, locals_hash={})
       @controller = controller
       @name = name
-      @locals = {:layout => self.class.options[:default_layout]}.merge(locals)
+      @locals = {:layout => self.class.options[:default_layout]}.merge(locals_hash)
     end
 
     def set_namespace(namespace)
@@ -284,12 +284,17 @@ module Cilantro
   end
 
   module Templater
-    # Method: layout
+    # Method: layout  Context: controller action
+    # example action method:
+    #   get :new do
+    #     layout :simple
+    #     person = person.new
+    #   end    
     def layout(name)
       @layout_name = name
     end
 
-    # Method: view
+    # Method: view  Context: controller action
     # Inputs: optionally, name and locals
     # Output: a view object, and whenever a name is given, set the name. Default to :default view if none given.
     def view(name=nil, locals={})
@@ -304,7 +309,7 @@ module Cilantro
       return @view
     end
 
-    # Method: respond_to
+    # Method: respond_to  Context: controller action
     # Inputs: type, &block
     # Output: The cumulative best chosen format will be returned each time this is called, so
     #          when called to render, it will run the block associated with that format and
