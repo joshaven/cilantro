@@ -55,7 +55,7 @@ module Cilantro
       write_to_file APP_ROOT/'tasks'/'rspec.rake', get_template('rspec.rake')
       write_to_file APP_ROOT/'spec'/'spec_helper.rb', get_template('spec_helper.rb')
       write_to_file APP_ROOT/'spec'/'example_spec.rb', get_template('example_spec.rb')
-      write_to_file APP_ROOT/'public'/'favicon.ico', get_template('favicon.ico')
+      copy_file APP_ROOT/'public'/'favicon.ico', 'favicon.ico'
     end
   
     def default_model(name)
@@ -74,6 +74,10 @@ module Cilantro
     def write_to_file(full_path, data)
       ensure_path File.dirname(full_path)
       File.open(full_path, 'w') {|f| f.write(data.is_a?(Array) ? data.join("\n") : data) } unless File.exists?(full_path)
+    end
+    
+    def copy_file(destination_path, file_name)
+      File.copy(destination_path, CILANTRO_ROOT/'lib'/'cilantro'/'generator'/file_name)
     end
     
     # Make a folder and any parent folders as needed.
