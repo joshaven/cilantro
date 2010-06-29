@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joshaven Potter"]
-  s.date = %q{2010-06-08}
+  s.date = %q{2010-06-29}
   s.default_executable = %q{cilantro}
   s.description = %q{A framework build on top of Sinatra, boasting automagic gem management, auto-reloading in development, and an innovative way to manage templates.}
   s.email = %q{yourtech@gmail.com}
@@ -93,19 +93,16 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rack>, [">= 1.0"])
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
-      s.add_development_dependency(%q<dm-core>, ["~> 0.10.2"])
-      s.add_development_dependency(%q<do_sqlite3>, ["~> 0.10.1.1"])
+      s.add_development_dependency(%q<dm-core>, [">= 0.10.2"])
     else
       s.add_dependency(%q<rack>, [">= 1.0"])
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
-      s.add_dependency(%q<dm-core>, ["~> 0.10.2"])
-      s.add_dependency(%q<do_sqlite3>, ["~> 0.10.1.1"])
+      s.add_dependency(%q<dm-core>, [">= 0.10.2"])
     end
   else
     s.add_dependency(%q<rack>, [">= 1.0"])
     s.add_dependency(%q<rspec>, [">= 1.2.9"])
-    s.add_dependency(%q<dm-core>, ["~> 0.10.2"])
-    s.add_dependency(%q<do_sqlite3>, ["~> 0.10.1.1"])
+    s.add_dependency(%q<dm-core>, [">= 0.10.2"])
   end
 end
 

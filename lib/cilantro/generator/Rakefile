@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rake'
+require 'extlib'
 
 ###########################
 # Load Cilantro Environment
@@ -28,12 +29,11 @@ task :production_db => [:load_cilantro] do
 end
 
 # Load any app level custom rakefile extensions from lib/tasks
-tasks_path = File.dirname(__FILE__)/"tasks"
-Dir["#{tasks_path}/*.rake"].each do |rake_file|
+Dir.glob(File.expand_path(File.dirname(__FILE__)/'tasks'/'*.rake')).each do |rake_file|
   begin
     load rake_file
   rescue LoadError
-    warn "Could not load #{rake_file}"
+    warn "Could not load rake task: #{rake_file}"
   end
 end
 

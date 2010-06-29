@@ -18,9 +18,7 @@ begin
     gem.test_files  = FileList['spec/**/*.rb']
     gem.add_dependency "rack", ">= 1.0"
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_development_dependency 'dm-core',     '~> 0.10.2' 
-    gem.add_development_dependency 'do_sqlite3',  '~> 0.10.1.1'
-    # gem.add_development_dependency 'yard',        '~> 0.5.4' # Needed for RDoc
+    gem.add_development_dependency 'dm-core',     '>= 0.10.2' 
     
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
