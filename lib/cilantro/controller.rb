@@ -22,34 +22,54 @@ module Cilantro
     # > end
     # > # GET /people/new
     # > #  -> action is run, view is found in: /views/people/new.haml
-    def namespace(new_namespace=nil,name=nil,&block)
-      raise ArgumentError, "Scope must be a string, a symbol, or a hash with string values." if !new_namespace.nil? && !(new_namespace.is_a?(String) || new_namespace.is_a?(Symbol) || new_namespace.is_a?(Hash))
-      @namespace ||= '/'
-      if new_namespace.is_a?(Hash)
-        new_namespace.each do |name,new_namespace|
-          block_given? ? namespace(new_namespace,name) { block.call } : namespace(new_namespace,name)
-        end
+    def namespace(new_namespace=nil, name=nil, &block)
+      return @namespace ||= '/' if new_namespace.nil? # For use as a getter method
+
+      # Ensure setter has valid input
+      unless new_namespace.is_a?(String) || new_namespace.is_a?(Symbol) || new_namespace.is_a?(Hash)
+        raise ArgumentError, "Controller namespace (aka scope or path) must be a string, a symbol, or a hash with string values."
+      end
+
+      # # Handel hash instance
+      if new_namespace.is_a? Hash
+        new_namespace.each_pair {|n, ns| block_given? ? namespace(ns,n) { block.call } : namespace(ns,n)}
       else
-        # Here we have just one namespace and *possibly* a name to save for the first route registered with this namespace.
-        # Sanitize new namespace to NOT end with a slash OR begin with a slash.
-        @next_route_name = new_namespace if new_namespace.is_a?(Symbol)
-        new_namespace = new_namespace.to_s.gsub(/(^\/|\/$)/,'') if new_namespace
+        # Set namespace variable: ensure it begins, but not ends, with a slash and never has multiple consecutive slashes
         @next_route_name = name if name
-        # Join namespace to previous namespace by a slash.
-        if block_given?
-          old_namespace = @namespace
-          @namespace = @namespace.gsub(/\/$/,'')+'/'+new_namespace
-          yield
-          @namespace = old_namespace
-        else
-          if new_namespace.nil?
-            @namespace
-          else
-            @namespace = @namespace.gsub(/\/$/,'')+'/'+new_namespace
-          end
-        end
+        @namespace = ('/' + new_namespace.to_s).gsub(/\/$/,'').gsub(/\/+/,'/')
       end
     end
+    # def namespace(new_namespace=nil,name=nil,&block)
+    #   if !new_namespace.nil? && !(new_namespace.is_a?(String) || new_namespace.is_a?(Symbol) || new_namespace.is_a?(Hash))
+    #     raise ArgumentError, "Controller namespace (aka scope or path) must be a string, a symbol, or a hash with string values."
+    #   end
+    #   @namespace ||= '/'
+    #   if new_namespace.is_a?(Hash)
+    #     new_namespace.each do |name,new_namespace|
+    #       block_given? ? namespace(new_namespace,name) { block.call } : namespace(new_namespace,name)
+    #     end
+    #   else
+    #     # Here we have just one namespace and *possibly* a name to save for the first route registered with this namespace.
+    #     # Sanitize new namespace to NOT end with a slash OR begin with a slash.
+    #     @next_route_name = new_namespace if new_namespace.is_a?(Symbol)
+    #     new_namespace = new_namespace.to_s.gsub(/(^\/|\/$)/,'') if new_namespace
+    #     @next_route_name = name if name
+    #     # Join namespace to previous namespace by a slash.
+    #     if block_given?
+    #       old_namespace = @namespace
+    #       @namespace = @namespace.gsub(/\/$/,'')+'/'+new_namespace
+    #       yield
+    #       @namespace = old_namespace
+    #     else
+    #       if new_namespace.nil?
+    #         @namespace
+    #       else
+    #         @namespace = @namespace.gsub(/\/$/,'')+'/'+new_namespace
+    #       end
+    #     end
+    #   end
+    # end
+
     alias :scope :namespace
     alias :path :namespace
 
@@ -102,13 +122,14 @@ module Cilantro
     # ie: helper :total do ... end 
     #     will become "#{self.name}_total" where self.name is the class name of this controller. 
     def helper(name, &block)
-      warn "Defining helper #{self.name.to_s + '_' + name.to_s}"
+# warn "Defining helper #{self.name.to_s + '_' + name.to_s}"
       application.send(:define_method, self.name.to_s + '_' + name.to_s, &block)
       # helper_method "#{self.name}_#{name}" &block
     end
 
   private
     def route(method, in_path, opts, &bk)
+# TODO: DRY this method up!
       if in_path.is_a?(Hash)
         return in_path.inject([]) do |rts,(path,name)|
           path = path_with_namespace(path)
@@ -135,7 +156,7 @@ module Cilantro
         application.route_names[in_path] = [rt[0], rt[1]]
         # puts "\tnamed :#{in_path}  -- #{rt[0]}"
         return rt
-      else
+      else # string
         path = path_with_namespace(in_path)
         # warn "Route: #{method} #{path[0]}"
         # Save the namespace with this route

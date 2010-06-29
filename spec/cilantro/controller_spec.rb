@@ -97,19 +97,23 @@ describe 'Cilantro::Controller' do
         TestController.namespace({:sample => 'sample'})
         [TestController.namespace, TestController.scope, TestController.path].should == ['/sample','/sample','/sample']
       end
-  
+      
+      # it 'should read and write multiple as a hash' do
+      #   TestController.namespace({:sample => 'sample', :simple => 'simple'})
+      #   # [TestController.namespace, TestController.scope, TestController.path].should == ['/sample','/sample','/sample']
+      #   TestController.application.namespaces.should == []
+      # end
+      
       it 'should read and write as a symbol' do
         TestController.namespace :sample
         [TestController.namespace, TestController.scope, TestController.path].should == ['/sample','/sample','/sample']
       end
   
-      it 'should redefine the namespace not append it' do
-        pending do
-          TestController.namespace :sample
-          TestController.namespace.should == '/sample'
-          TestController.namespace :smile
-          TestController.namespace.should == '/smile'
-        end
+      it 'should redefine the current namespace not append it' do
+        TestController.namespace :sample
+        TestController.namespace.should == '/sample'
+        TestController.namespace :smile
+        TestController.namespace.should == '/smile'
       end
   
       it 'should raise an error when given an invalid object' do
