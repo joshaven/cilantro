@@ -26,7 +26,7 @@ module Cilantro
         path = APP_ROOT/'app'/type.pluralize/name + '.rb'
       end
 
-      write_to_file(path, data || self.send("default_#{type}", name))
+      write_to_file(data || self.send("default_#{type}", name), path)
     end
 
   private
@@ -45,17 +45,17 @@ module Cilantro
         APP_ROOT/'tasks',
         APP_ROOT/'spec'
       ].each {|path| ensure_path path}
-      write_to_file APP_ROOT/'README.md', get_template('README.md')
-      write_to_file APP_ROOT/'Rakefile', get_template('Rakefile')
-      write_to_file APP_ROOT/'config'/'init.rb', get_template('init.rb')
-      write_to_file APP_ROOT/'config'/'unicorn.conf', get_template('unicorn.conf')
-      write_to_file APP_ROOT/'config.ru', get_template('config.ru')
-      write_to_file APP_ROOT/'config'/'database.yml', get_template('database.yml')
-      write_to_file APP_ROOT/'gems'/'gemrc.yml', get_template('gemrc.yml')
-      write_to_file APP_ROOT/'tasks'/'rspec.rake', get_template('rspec.rake')
-      write_to_file APP_ROOT/'spec'/'spec_helper.rb', get_template('spec_helper.rb')
-      write_to_file APP_ROOT/'spec'/'example_spec.rb', get_template('example_spec.rb')
-      copy_file APP_ROOT/'public'/'favicon.ico', 'favicon.ico'
+      write_to_file get_template('README.md'), APP_ROOT/'README.md'
+      write_to_file get_template('Rakefile'), APP_ROOT/'Rakefile'
+      write_to_file get_template('init.rb'), APP_ROOT/'config'/'init.rb'
+      write_to_file get_template('unicorn.conf'), APP_ROOT/'config'/'unicorn.conf'
+      write_to_file get_template('config.ru'), APP_ROOT/'config.ru'
+      write_to_file get_template('database.yml'), APP_ROOT/'config'/'database.yml'
+      write_to_file get_template('gemrc.yml'), APP_ROOT/'gems'/'gemrc.yml'
+      write_to_file get_template('rspec.rake'), APP_ROOT/'tasks'/'rspec.rake'
+      write_to_file get_template('spec_helper.rb'), APP_ROOT/'spec'/'spec_helper.rb'
+      write_to_file get_template('example_spec.rb'), APP_ROOT/'spec'/'example_spec.rb'
+      copy_file 'favicon.ico', APP_ROOT/'public'/'favicon.ico'
     end
   
     def default_model(name)
@@ -71,13 +71,13 @@ module Cilantro
     end
   
     # Write a string or array(of lines of text) to the given full path
-    def write_to_file(full_path, data)
+    def write_to_file(data, full_path)
       ensure_path File.dirname(full_path)
       File.open(full_path, 'w') {|f| f.write(data.is_a?(Array) ? data.join("\n") : data) } unless File.exists?(full_path)
     end
     
-    def copy_file(destination_path, file_name)
-      File.copy(destination_path, CILANTRO_ROOT/'lib'/'cilantro'/'generator'/file_name)
+    def copy_file(file_name, destination_path)
+      FileUtils.copy(CILANTRO_ROOT/'lib'/'cilantro'/'generator'/file_name, destination_path)
     end
     
     # Make a folder and any parent folders as needed.
