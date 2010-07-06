@@ -7,8 +7,7 @@ Specking & creating generators...
 
 # Changes for next version 
 * Controller-specific Error Catching
-* namespace controller method should redefine the namespace not append it: namespace '/one'; namespace '/two' => '/two'
-* (may be done, needs specked) Swap Erb with Erubis for template handeling of .erb or .rhtml files (for faster erb processing)
+* Swap Erb with Erubis for template handling of .erb or .rhtml files - for faster erb processing. (May be done, needs specked)
 
 # Considerations
 * checkout Beacon: http://github.com/foca/beacon
