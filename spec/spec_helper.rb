@@ -9,6 +9,8 @@ rescue LoadError
   require 'extlib'
 end
 
+APP_ROOT = File.expand_path( File.dirname(__FILE__)/'..' )
+
 require File.expand_path(File.join File.dirname(__FILE__), '..', 'lib', 'cilantro') unless defined?(Cilantro)
 Cilantro.load_environment
 
