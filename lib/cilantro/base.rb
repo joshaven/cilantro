@@ -1,4 +1,4 @@
-require CILANTRO_ROOT/'lib'/'cilantro'/'system'/'mysql_fix' if File.exists?(CILANTRO_ROOT/'lib'/'cilantro'/'system'/'mysql_fix')
+require CILANTRO_ROOT/'lib'/'cilantro'/'system'/'mysql_fix'
 
 module Cilantro
   class << self
@@ -263,8 +263,9 @@ module Cilantro
         @namespaces ||= {}
       end
       def route_names
-        @route_names ||= {}
+        @route_names ||= Mash.new
       end
+      
       def namespaced_filters
         @namespaced_filters ||= []
       end
