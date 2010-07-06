@@ -30,7 +30,7 @@ module Cilantro
         raise ArgumentError, "Controller namespace (aka scope or path) must be a string, a symbol, or a hash with string values."
       end
 
-      # # Handel hash instance
+      # # Handle hash instance
       if new_namespace.is_a? Hash
         new_namespace.each_pair {|n, ns| block_given? ? namespace(ns,n) { block.call } : namespace(ns,n)}
       else
@@ -131,6 +131,7 @@ module Cilantro
     def route(method, in_path, opts, &bk)
 # TODO: DRY this method up!
       if in_path.is_a?(Hash)
+        # here, rts is the collection, path is the key, name is the value
         return in_path.inject([]) do |rts,(path,name)|
           path = path_with_namespace(path)
           # warn "Route: #{method} #{path[0]}"
@@ -140,7 +141,7 @@ module Cilantro
           rt = application.send(method.downcase, path[0], opts, &bk)
           rt[1].replace(path[1])
           # Link up the name to the compiled route regexp
-          application.route_names[name.to_sym] = [rt[0], rt[1]]
+          application.route_names[name] = [rt[0], rt[1]]
           # puts "\tnamed :#{name}  -- #{rt[0]}"
           rts << rt
         end
@@ -167,6 +168,8 @@ module Cilantro
           application.route_names[@next_route_name.to_sym] = [rt[0], rt[1]]
           # puts "\tnamed :#{@next_route_name}  -- #{rt[0]}"
           @next_route_name = nil
+        else
+          application.route_names[in_path] = [rt[0], rt[1]]
         end
         return rt
       end

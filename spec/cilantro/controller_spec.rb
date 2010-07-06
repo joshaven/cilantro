@@ -122,17 +122,32 @@ describe 'Cilantro::Controller' do
     end
     
     describe 'definitions' do
-      before :all do
+      before :each do # Wipe the slate clean for the following tests
         Object.send(:remove_const, :TestController)
+        Object.send(:remove_const, :Application)
+        load CILANTRO_ROOT/'lib'/'cilantro'/'sinatra.rb'
         class TestController < Application; namespace '/'; end
       end
-      
+          
       %w(get put post delete head).each do |verb|
-        it "defines #{verb} routes" do
+        it "should define #{verb} routes" do
           TestController.send(verb, "test_#{verb}") { true }
           Cilantro.app.routes[verb.upcase].last.first.should == Regexp.new("^\/test_#{verb}$")
         end
       end
+      
+      multi_test_data = [ ['test_get_string', {:test_get_string=>[/^\/test_get_string$/, []]}.to_mash.to_yaml],
+        [:test_get_symbol, {:test_get_symbol=>[/^\/test_get_symbol$/, []]}.to_mash.to_yaml],
+        [{:hello => 'some', :world => 'thing'}, {:some=>[/^\/hello$/, []], :thing=>[/^\/world$/, []]}.to_mash.to_yaml]
+      ]
+      
+      multi_test_data.each do |test_and_result|
+        it "should define routes with #{test_and_result.first.class} paths" do
+          TestController.send('get', test_and_result.first) { true }
+          Application.route_names.to_yaml.should == test_and_result.last
+        end
+      end
+      
     end
   end
 end
