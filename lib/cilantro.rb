@@ -20,6 +20,7 @@ unless $LOADED_FEATURES.include?(CILANTRO_ROOT/'lib'/'cilantro.rb') or $LOADED_F
   # Define controller and templater
   require CILANTRO_ROOT/'lib'/'cilantro'/'controller'
   require CILANTRO_ROOT/'lib'/'cilantro'/'templater'
+  require CILANTRO_ROOT/'lib'/'cilantro'/'helpers'
   
   # Permit auto reloading of source files
   dependency 'rack'
@@ -28,6 +29,4 @@ unless $LOADED_FEATURES.include?(CILANTRO_ROOT/'lib'/'cilantro.rb') or $LOADED_F
   # Dynamic application creation...
   dependency 'extlib'
   require File.expand_path(CILANTRO_ROOT/'lib'/'cilantro'/'generator')
-  
-  require CILANTRO_ROOT/'lib'/'cilantro'/'helpers'
 end
