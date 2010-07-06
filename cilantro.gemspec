@@ -51,6 +51,7 @@ Gem::Specification.new do |s|
      "lib/cilantro/generator/rspec.rake",
      "lib/cilantro/generator/spec_helper.rb",
      "lib/cilantro/generator/unicorn.conf",
+     "lib/cilantro/helpers.rb",
      "lib/cilantro/sinatra.rb",
      "lib/cilantro/system/mysql_fix.rb",
      "lib/cilantro/templater.rb",
