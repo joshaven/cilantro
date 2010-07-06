@@ -146,7 +146,6 @@ module Cilantro
         end
       elsif in_path.is_a?(Symbol)
         path = path_with_namespace(in_path)
-        # warn "Route: #{method} #{path[0]}"
         # Save the namespace with this route
         application.namespaces["#{method} #{path[0]}"] = [self, namespace]
         # Register the path with Sinatra's routing engine
@@ -158,7 +157,6 @@ module Cilantro
         return rt
       else # string
         path = path_with_namespace(in_path)
-        # warn "Route: #{method} #{path[0]}"
         # Save the namespace with this route
         application.namespaces["#{method} #{path[0]}"] = [self, namespace]
         # Register the path with Sinatra's routing engine

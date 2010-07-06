@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joshaven Potter"]
-  s.date = %q{2010-06-29}
+  s.date = %q{2010-07-06}
   s.default_executable = %q{cilantro}
   s.description = %q{A framework build on top of Sinatra, boasting automagic gem management, auto-reloading in development, and an innovative way to manage templates.}
   s.email = %q{yourtech@gmail.com}
@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
      "lib/cilantro/generator/default_model.erb",
      "lib/cilantro/generator/default_view.erb",
      "lib/cilantro/generator/example_spec.rb",
+     "lib/cilantro/generator/favicon.ico",
      "lib/cilantro/generator/gemrc.yml",
      "lib/cilantro/generator/init.rb",
      "lib/cilantro/generator/rspec.rake",

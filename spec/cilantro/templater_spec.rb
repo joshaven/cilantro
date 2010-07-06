@@ -136,7 +136,7 @@ describe :Cilantro do
       end
     
       it 'should be able to pass locals when the view whither named or not'
-    
+      
       it 'should set view name' do
         @app.view('view_name').name.should == 'view_name'
       end
