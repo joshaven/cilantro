@@ -128,6 +128,7 @@ module Cilantro
       locals.to_xml
     end
 
+
     # These are to make Cilantro Templates work with Sinatra and Rack.
     alias :to_str :to_html
     alias :to_s :to_str
@@ -209,6 +210,12 @@ module Cilantro
       @locals[name.to_sym]
     end
 
+    # This allows such as:
+    #   get :list do
+    #     view.people = Person.all  
+    #     # The view method above returns a Template instance and people is a missing method
+    #     # this assigns a variable in the associated view object.
+    #   end
     def method_missing(name, value=nil, *args)
       sign = if name.to_s =~ /^(.*)([\=\?])$/
         name = $1.to_sym
@@ -302,6 +309,9 @@ module Cilantro
       @view ||= Template.new(self, name || :default, locals)
       @view.name = name if name
       # Set the namespace into the view as soon as we seem to be inside of the action code.
+# puts ">>>\n\tview() caller[0]: #{caller[0]}\n\tcaller[0] =~ /[A-Z]+ / #{caller[0] =~ /[A-Z]+ / ? true : false}<<<"
+# puts ">>>\n\t@view.set_namespace(#{self.class.namespaces[caller[0].match(/`(.*?)'/)[1]]})\n<<<<" if caller[0] =~ /[A-Z]+ /
+# @view.set_namespace(Posts/posts)
       @view.set_namespace(self.class.namespaces[caller[0].match(/`(.*?)'/)[1]]) if caller[0] =~ /[A-Z]+ /
       if block_given?
         yield @view
