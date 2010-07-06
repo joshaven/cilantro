@@ -28,4 +28,6 @@ unless $LOADED_FEATURES.include?(CILANTRO_ROOT/'lib'/'cilantro.rb') or $LOADED_F
   # Dynamic application creation...
   dependency 'extlib'
   require File.expand_path(CILANTRO_ROOT/'lib'/'cilantro'/'generator')
+  
+  require CILANTRO_ROOT/'lib'/'cilantro'/'helpers'
 end
