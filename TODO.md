@@ -4,6 +4,8 @@ Specking & creating generators...
 * Cleanup generator script... currently you have to be in your project folder and then you run 'cilantro generate'  
   Should support 'cilantro generate project_name'
 * Ensure that the generated project runs by its self and does something useful...
+* Write tests to show & test @next_route feature found in controller.rb under the :route method def
+* Ensure that auto_load is working properly
 
 # Changes for next version 
 * Controller-specific Error Catching
