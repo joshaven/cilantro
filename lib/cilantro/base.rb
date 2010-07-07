@@ -8,9 +8,12 @@ module Cilantro
 
     attr_writer :auto_reload
     def auto_reload
+# FIXME: This method is disabled because it was basically locking up when serving static files
       # auto_reload only works when Cilantro is the master process
-      $0 =~ /(^|\/)cilantro$/ && @auto_reload
+      # $0 =~ /(^|\/)cilantro$/ && @auto_reload
+      false
     end
+
 
     def load_config(specified_env=nil)
       # override env with given env and set local env variable
@@ -271,7 +274,7 @@ module Cilantro
       end
 
       def inherited(base)
-        base.send(:extend, Cilantro::Controller)
+        base.send(:extend, Cilantro::Controller) if defined?(Cilantro::Controller)
         base.instance_variable_set(:@application, self)
       end
     end
