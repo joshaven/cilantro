@@ -56,6 +56,8 @@ module Cilantro
       write_to_file get_template('spec_helper.rb'), APP_ROOT/'spec'/'spec_helper.rb'
       write_to_file get_template('example_spec.rb'), APP_ROOT/'spec'/'example_spec.rb'
       copy_file 'favicon.ico', APP_ROOT/'public'/'favicon.ico'
+      copy_file 'Blk2Wh150x1.gif', APP_ROOT/'public'/'images'/'Blk2Wh150x1.gif'
+      copy_file 'cilantro_100x130.gif', APP_ROOT/'public'/'images'/'cilantro_100x130.gif'
     end
   
     def default_model(name)
