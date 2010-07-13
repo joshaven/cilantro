@@ -121,6 +121,19 @@ describe 'Cilantro::Controller' do
       end
     end
     
+    describe 'default_view' do
+      before :each do
+        Object.send(:remove_const, :TestController)
+        class TestController < Application; namespace '/'; end
+        
+        it 'should render index as a default view'
+        
+        it 'should render the list view after default_view is set to :list'
+        
+      end
+      
+    end
+    
     describe 'definitions' do
       before :each do # Wipe the slate clean for the following tests
         Object.send(:remove_const, :TestController)

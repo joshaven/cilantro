@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joshaven Potter"]
-  s.date = %q{2010-07-06}
+  s.date = %q{2010-07-12}
   s.default_executable = %q{cilantro}
   s.description = %q{A framework build on top of Sinatra, boasting automagic gem management, auto-reloading in development, and an innovative way to manage templates.}
   s.email = %q{yourtech@gmail.com}
