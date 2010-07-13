@@ -10,6 +10,6 @@ dependency 'sinatra/base', :gem => 'sinatra'
 class Application < Sinatra::Base
   include Cilantro::Application
   include Cilantro::Templater if defined? Cilantro::Templater
-  include Cilantro::Helpers if defined? Cilantro::Templater
+  include Cilantro::Helpers if defined? Cilantro::Helpers
   enable :sessions
 end
