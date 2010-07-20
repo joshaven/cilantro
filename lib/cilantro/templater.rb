@@ -142,6 +142,7 @@ module Cilantro
     end
     # ****
 
+    # Renders the output of partial file in the place of the partial method.
     def partial(name, new_locals={})
       if locals.has_key?(:with)
         partials(name, new_locals)
@@ -158,6 +159,8 @@ module Cilantro
         @locals = old_locals
 
         if partl = Template.get_partial(name, @namespace)
+          render(partl, self, new_locals)
+        elsif partl = Template.get_partial(name, '/shared/')
           render(partl, self, new_locals)
         else
           raise RuntimeError, "Could not find partial `_#{name}' from namespace #{@namespace}", caller

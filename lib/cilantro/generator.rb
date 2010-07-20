@@ -35,6 +35,7 @@ module Cilantro
         APP_ROOT/'app'/'controllers',
         APP_ROOT/'app'/'views',
         APP_ROOT/'app'/'views'/'layouts',
+        APP_ROOT/'app'/'views'/'shared',
         APP_ROOT/'config',
         APP_ROOT/'db',
         APP_ROOT/'gems',
