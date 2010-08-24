@@ -1,0 +1,6 @@
+--- 
+environment: :development
+models: /Users/joshaven/projects/sinatra-template/app/models
+views: /Users/joshaven/projects/sinatra-template/app/views
+controllers: /Users/joshaven/projects/sinatra-template/app/controllers
+lib: /Users/joshaven/projects/sinatra-template/lib

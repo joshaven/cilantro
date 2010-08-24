@@ -81,13 +81,15 @@ module Kernel
 
   # TODO: support all gem installation options, currently, the options hash will only deal with :version
   def dependency(name, options={})
-    if [options[:env] ||= ENV['RACK_ENV']].flatten.collect {|e| e.to_s}.include? ENV['RACK_ENV']
+    # I'm not sure why it was important to check for ENV['RACK_ENV'] but it breaks things now so it's commented out --> JP
+    # if [options[:env] ||= ENV['RACK_ENV']].flatten.collect {|e| e.to_s}.include? ENV['RACK_ENV']
       begin
         require name
-      rescue LoadError
+      rescue LoadError => e
         if File.directory?("#{APP_ROOT}/gems") && File.writable?("#{APP_ROOT}/gems")
+          puts "!!! Gem not found: #{e.inspect}\n\n"
           puts "Installing gem locally: #{options[:gem] || name}..."
-          puts `gem install --config-file gems/gemrc.yml #{'-v "'+options[:version].gsub(' ','')+'"' if options[:version]} #{options[:gem] || name}`
+          puts `gem install --config-file #{APP_ROOT}/gems/gemrc.yml #{'-v "'+options[:version].gsub(' ','')+'"' if options[:version]} #{options[:gem] || name}`
           Gem.use_paths("#{APP_ROOT}/gems", ["#{APP_ROOT}/gems"])
           begin
             require name
@@ -99,13 +101,13 @@ module Kernel
           raise 'UNKNOWN ERROR see cilantro/dependencies.rb'
         end
       end
-    else # In case you don't have local gems, load the system gems or warn when they need to be installed
-      begin
-        require name
-      rescue LoadError
-        raise "ERROR: cannot require #{name} try:\n sudo gem install #{name}"
-      end
-    end
+    # else # In case you don't have local gems, load the system gems or warn when they need to be installed
+    #   begin
+    #     require name
+    #   rescue LoadError
+    #     raise "ERROR: cannot require #{name} try:\n sudo gem install #{name}"
+    #   end
+    # end
     
     Cilantro.add_gem(options[:gem] || name, options)
   end

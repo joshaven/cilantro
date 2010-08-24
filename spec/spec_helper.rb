@@ -1,39 +1,21 @@
-ENV['RACK_ENV'] = 'test'
+require 'rubygems'
+require 'sinatra'
+require 'spec'
+require 'spec/interop/test'
+require 'rack/test'
 
-begin
-  require 'rack'
-  require 'extlib'
-rescue LoadError
-  require 'rubygems'
-  require 'rack'
-  require 'extlib'
-end
+# set test environment
+Sinatra::Base.set :environment, :test
+Sinatra::Base.set :run, false
+Sinatra::Base.set :raise_errors, true
+Sinatra::Base.set :logging, false
 
-APP_ROOT = File.expand_path( File.dirname(__FILE__)/'..' )
+require 'application'
 
-require File.expand_path(File.join File.dirname(__FILE__), '..', 'lib', 'cilantro') unless defined?(Cilantro)
-Cilantro.load_environment
+# establish in-memory database for testing
+DataMapper.setup(:default, "sqlite3::memory:")
 
-dependency 'spec', :gem => 'rspec', :env => :test
-dependency 'rack/test', :gem => 'rack-test', :env => :test
-dependency 'sinatra/base'
-
-# spec helper methods
-require 'socket'
-def port_in_use?(port)
-  begin
-    s = TCPSocket.new('0.0.0.0', port.to_s)
-    s.close
-    return true
-  rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
-    return false
-  end
-end  
-
-# Example useage:
-#   response = mock_responce '/test', :get
-#   response.body.should eql("Hello World")
-def mock_responce(path, verb='GET', app=Cilantro.app)
-  request = Rack::MockRequest.env_for(path, 'HTTP_VERSION' => '1.1', 'REQUEST_METHOD' => verb.to_s.upcase)
-  Rack::MockResponse.new *Rack::Chunked.new(app).call(request)
+Spec::Runner.configure do |config|
+  # reset database before each example is run
+  config.before(:each) { DataMapper.auto_migrate! }
 end
